@@ -9,22 +9,22 @@ export interface IsTrueAction {
     readonly isTrue: boolean
 }
 
-export const isTrue = (isTrue: boolean): IsTrueAction => ({
-    type: "IS_TRUE",
+export const isTrue1 = (isTrue: boolean): IsTrueAction => ({
     isTrue,
+    type: "IS_TRUE",
 })
 
-export interface AppState {
-    readonly works: string
-    readonly isTrue: boolean
-}
+// export interface AppState {
+//     readonly works: string
+//     readonly isTrue: boolean
+// }
 
-export const appState: AppState = {
-    works: "somehow",
+export const appState = {
     isTrue: false,
+    works: "somehow",
 }
 
-export const INITIAL_STATE: AppState = appState
+export const INITIAL_STATE = appState
 
 export function reducer1(
     state: boolean = INITIAL_STATE.isTrue,
