@@ -4,7 +4,8 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "start-web": "cd packages/web; react-scripts-ts start"
   },
   "devDependencies": {
     "lerna": "^2.11.0"

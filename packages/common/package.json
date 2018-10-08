@@ -6,10 +6,13 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^10.3.2",
-    "typescript": "^2.9.1"
+    "typescript": "^3.1.1"
   },
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch"
+  },
+  "dependencies": {
+    "redux": "^4.0.0"
   }
 }
