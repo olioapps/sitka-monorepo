@@ -1,7 +1,6 @@
 import * as redux from "redux"
 import { applyMiddleware, createStore, Middleware } from "redux"
 import { createLogger } from "redux-logger"
-// import { actions, counter } from "./redux/modules/counter"
 import { actions, counter } from "../redux/modules/counter"
 
 // begin imports without special characters
