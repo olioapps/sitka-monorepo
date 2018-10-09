@@ -1,55 +1,59 @@
 import * as redux from "redux"
 
-export const add = (a: number, b: number) => a + b
-
-export const frank = "fraaank"
-
-export interface IsTrueAction {
-    readonly type: "IS_TRUE"
-    readonly isTrue: boolean
+export interface IncrementAction {
+    readonly type: string
 }
 
-export const isTrue1 = (isTrue: boolean): IsTrueAction => ({
-    isTrue,
-    type: "IS_TRUE",
+export interface IDecrementAction {
+    readonly type: string
+}
+
+export interface IResetAction {
+    readonly type: string
+}
+
+export interface IAppState {
+    readonly counter: number
+}
+
+const increment = (): IncrementAction => ({
+    type: "INCREMENT",
 })
 
-// export interface AppState {
-//     readonly works: string
-//     readonly isTrue: boolean
-// }
+const decrement = (): IDecrementAction => ({
+    type: "DECREMENT",
+})
 
-export const appState = {
-    isTrue: false,
-    works: "somehow",
+const reset = (): IResetAction => ({
+    type: "RESET",
+})
+
+const appState: IAppState = {
+    counter: 0,
 }
 
-export const INITIAL_STATE = appState
+const INITIAL_STATE: IAppState = appState
 
-export function reducer1(
-    state: boolean = INITIAL_STATE.isTrue,
-    action: IsTrueAction,
-): boolean {
+const counter = (
+    state = INITIAL_STATE.counter,
+    action: IncrementAction | IDecrementAction,
+): number => {
     switch (action.type) {
-        case "IS_TRUE":
-            return action.isTrue
+        case "INCREMENT":
+            return state + 1
+        case "DECREMENT":
+            return state - 1
+        case "RESET":
+            return INITIAL_STATE.counter
         default:
             return state
     }
 }
 
-export const appReducer = redux.combineReducers({ reducer1 })
+export const appReducer = redux.combineReducers({ counter })
+const store = redux.createStore(appReducer)
 
-import { createStore } from "redux"
 
-// const clientMiddleware: Middleware = <Middleware> createClientMiddleware()
-// const logger = createLogger({ stateTransformer: (state: Core.AppState) => state })
-// const sagaMiddleware = createSagaMiddleware()
-// const additionalMiddleware: ReadonlyArray<Middleware> = [logger, clientMiddleware]
-// const middleware: ReadonlyArray<Middleware> = [ sagaMiddleware ].concat(additionalMiddleware)
+const actions = { increment, decrement, reset }
 
-// const createStoreWithMiddleware = applyMiddleware(...middleware)(createStore)
-const store = createStore(appReducer)
-// sagaMiddleware.run(Sagas.root)
-
-export { store }
+export { actions, appState, store }
