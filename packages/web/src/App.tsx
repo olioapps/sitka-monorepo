@@ -25,43 +25,43 @@ class App extends React.Component<IAppProps> {
     constructor(props: IAppProps) {
         super(props)
 
-        this.incrementer = this.incrementer.bind(this)
+        this.incrementCounter = this.incrementCounter.bind(this)
+        this.decrementCounter = this.decrementCounter.bind(this)
+        this.resetCounter = this.resetCounter.bind(this)
     }
 
-    public incrementer() {
-        const {
-            actions: { increment },
-        } = this.props
-        /* tslint:disable */
-        increment()
-        console.log(this.props.appState)
-        console.log("from cpx", store.getState())
-        debugger
-        /* tslint:enable */
+    public incrementCounter(): void {
+        this.props.actions.increment()
+    }
+
+    public decrementCounter() {
+        this.props.actions.decrement()
+    }
+
+    public resetCounter() {
+        this.props.actions.reset()
     }
 
     public render() {
         const { counter } = store.getState()
-        const { decrement, reset } = actions
-        /* tslint:disable */
-        console.log("rendered")
-        /* tslint:enable */
+
         return (
             <div className="App">
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo" />
-                    <h1 className="App-title">Welcome to React => {counter}</h1>
+                    <h1 className="App-title">
+                        Welcome to React Counter => {counter}
+                    </h1>
                 </header>
                 <div className="wrap">
-                    <h1 id="counter">COUNTER</h1>
                     <div className="wrap-btns">
-                        <button onClick={this.incrementer} id="increment">
+                        <button onClick={this.incrementCounter} id="increment">
                             +
                         </button>
-                        <button onClick={decrement} id="decrement">
+                        <button onClick={this.decrementCounter} id="decrement">
                             -
                         </button>
-                        <button onClick={reset} id="reset">
+                        <button onClick={this.resetCounter} id="reset">
                             Reset
                         </button>
                     </div>

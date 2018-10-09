@@ -32,17 +32,14 @@ const appState: IAppState = {
     counter: 0,
 }
 
-export const INITIAL_STATE: IAppState = appState
+const INITIAL_STATE: IAppState = appState
 
-function counter(
+const counter = (
     state = INITIAL_STATE.counter,
     action: IncrementAction | IDecrementAction,
-) {
+): number => {
     switch (action.type) {
         case "INCREMENT":
-            /* tslint:disable */
-            console.log("reducer", state + 1)
-            /* tslint:enable */
             return state + 1
         case "DECREMENT":
             return state - 1
@@ -54,16 +51,8 @@ function counter(
 }
 
 export const appReducer = redux.combineReducers({ counter })
-
-// const clientMiddleware: Middleware = <Middleware> createClientMiddleware()
-// const logger = createLogger({ stateTransformer: (state: Core.IAppState) => state })
-// const sagaMiddleware = createSagaMiddleware()
-// const additionalMiddleware: ReadonlyArray<Middleware> = [logger, clientMiddleware]
-// const middleware: ReadonlyArray<Middleware> = [ sagaMiddleware ].concat(additionalMiddleware)
-
-// const createStoreWithMiddleware = applyMiddleware(...middleware)(createStore)
 const store = redux.createStore(appReducer)
-// sagaMiddleware.run(Sagas.root)
+
 
 const actions = { increment, decrement, reset }
 
