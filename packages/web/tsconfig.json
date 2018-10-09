@@ -3,6 +3,7 @@
     "compilerOptions": {
         "baseUrl": ".",
         "outDir": "build/dist",
+        "rootDir": "src",
         "lib": ["es6", "dom"],
         "sourceMap": true,
         "allowJs": true,
