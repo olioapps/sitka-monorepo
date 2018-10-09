@@ -1,55 +1,79 @@
 import * as redux from "redux"
 
-export const add = (a: number, b: number) => a + b
-
-export const frank = "fraaank"
-
-export interface IsTrueAction {
-    readonly type: "IS_TRUE"
-    readonly isTrue: boolean
+interface IncrementAction {
+    readonly type: string
 }
 
-export const isTrue1 = (isTrue: boolean): IsTrueAction => ({
-    isTrue,
-    type: "IS_TRUE",
+interface IDecrementAction {
+    readonly type: string
+}
+
+interface IResetAction {
+    readonly type: string
+}
+
+interface IAppState {
+    readonly digit: number
+}
+
+const increment = (): IncrementAction => ({
+    type: "INCREMENT",
 })
 
-// export interface AppState {
-//     readonly works: string
-//     readonly isTrue: boolean
-// }
+const decrement = (): IDecrementAction => ({
+    type: "DECREMENT",
+})
 
-export const appState = {
-    isTrue: false,
-    works: "somehow",
+const reset = (): IResetAction => ({
+    type: "RESET",
+})
+
+const appState: IAppState = {
+    digit: 1,
 }
 
-export const INITIAL_STATE = appState
+export const INITIAL_STATE: IAppState = appState
 
-export function reducer1(
-    state: boolean = INITIAL_STATE.isTrue,
-    action: IsTrueAction,
-): boolean {
+function counter(
+    state = INITIAL_STATE.digit,
+    action: IncrementAction | IDecrementAction,
+) {
     switch (action.type) {
-        case "IS_TRUE":
-            return action.isTrue
+        case "INCREMENT":
+            /* tslint:disable */
+            console.log("+1")
+            /* tslint:enable */
+
+            return state + 1
+        case "DECREMENT":
+            /* tslint:disable */
+
+            console.log("-1")
+            /* tslint:enable */
+            return state - 1
+        case "RESET":
+            return INITIAL_STATE.digit
         default:
             return state
     }
 }
 
-export const appReducer = redux.combineReducers({ reducer1 })
+export const appReducer = redux.combineReducers({ counter })
 
 import { createStore } from "redux"
 
 // const clientMiddleware: Middleware = <Middleware> createClientMiddleware()
-// const logger = createLogger({ stateTransformer: (state: Core.AppState) => state })
+// const logger = createLogger({ stateTransformer: (state: Core.IAppState) => state })
 // const sagaMiddleware = createSagaMiddleware()
 // const additionalMiddleware: ReadonlyArray<Middleware> = [logger, clientMiddleware]
 // const middleware: ReadonlyArray<Middleware> = [ sagaMiddleware ].concat(additionalMiddleware)
 
 // const createStoreWithMiddleware = applyMiddleware(...middleware)(createStore)
-const store = createStore(appReducer)
+export const store = createStore(appReducer)
 // sagaMiddleware.run(Sagas.root)
+/* tslint:disable */
+// console.log(store.getState()) // THIS WORKS
+/* tslint:enable */
+const actions = { increment, decrement, reset }
 
-export { store }
+export { IAppState, actions, appState }
