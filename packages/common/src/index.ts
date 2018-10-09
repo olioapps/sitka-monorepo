@@ -1,4 +1,6 @@
 import * as redux from "redux"
+import { createStore, applyMiddleware, Middleware } from "redux"
+import { createLogger } from "redux-logger"
 
 export interface IncrementAction {
     readonly type: string
@@ -50,9 +52,19 @@ const counter = (
     }
 }
 
-export const appReducer = redux.combineReducers({ counter })
-const store = redux.createStore(appReducer)
+const appReducer = redux.combineReducers({ counter })
+const logger = createLogger({ stateTransformer: (state: IAppState) => state })
+const middleware: ReadonlyArray<Middleware> = [logger]
 
+const createStoreWithMiddleware = () => {
+    return createStore(
+        appReducer,
+        INITIAL_STATE,
+        applyMiddleware(...middleware),
+    )
+}
+
+const store = createStoreWithMiddleware()
 
 const actions = { increment, decrement, reset }
 
