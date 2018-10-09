@@ -1,4 +1,4 @@
-import { INITIAL_STATE } from "../../index"
+import { INITIAL_STATE } from "../../redux"
 export interface IncrementAction {
     readonly type: string
 }
