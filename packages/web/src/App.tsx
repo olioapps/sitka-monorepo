@@ -1,8 +1,8 @@
-import { actions, IAppState, store } from "@cashew/common"
+import { actions, AppState, store } from "@cashew/common"
 import {
-    IDecrementAction,
+    DecrementAction,
     IncrementAction,
-    IResetAction,
+    ResetAction,
 } from "@cashew/common/src/redux/modules/counter"
 
 import * as React from "react"
