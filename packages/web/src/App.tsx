@@ -1,9 +1,11 @@
-import { actions, AppState, store } from "@cashew/common"
 import {
+    actions,
+    AppState,
     DecrementAction,
     IncrementAction,
     ResetAction,
-} from "@cashew/common/src/redux/modules/counter"
+    store,
+} from "@cashew/common"
 
 import * as React from "react"
 import { connect } from "react-redux"
@@ -19,6 +21,7 @@ interface AppProps {
         reset: () => ResetAction
     }
 }
+
 class App extends React.Component<AppProps> {
     constructor(props: AppProps) {
         super(props)
