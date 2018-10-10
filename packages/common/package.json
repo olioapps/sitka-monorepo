@@ -16,5 +16,24 @@
         "@types/redux-logger": "^3.0.6",
         "redux": "^4.0.0",
         "redux-logger": "^3.0.6"
-    }
+    },
+  "name": "@cashew/common",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^10.3.2",
+    "typescript": "^3.1.1"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@types/redux-logger": "^3.0.6",
+    "redux": "^4.0.0",
+    "redux-logger": "^3.0.6",
+    "redux-saga": "^0.16.2"
+  }
 }
