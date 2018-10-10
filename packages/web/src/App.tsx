@@ -1,8 +1,8 @@
-import { actions, IAppState, store } from "@cashew/common"
+import { actions, AppState, store } from "@cashew/common"
 import {
-    IDecrementAction,
+    DecrementAction,
     IncrementAction,
-    IResetAction,
+    ResetAction,
 } from "@cashew/common/src/redux/modules/counter"
 
 import * as React from "react"
@@ -11,17 +11,16 @@ import { bindActionCreators } from "redux"
 import "./App.css"
 import logo from "./logo.svg"
 
-interface IAppProps {
-    readonly appState: IAppState
+interface AppProps {
+    readonly appState: AppState
     readonly actions: {
         increment: () => IncrementAction
-        decrement: () => IDecrementAction
-        reset: () => IResetAction
+        decrement: () => DecrementAction
+        reset: () => ResetAction
     }
 }
-
-class App extends React.Component<IAppProps> {
-    constructor(props: IAppProps) {
+class App extends React.Component<AppProps> {
+    constructor(props: AppProps) {
         super(props)
 
         this.incrementCounter = this.incrementCounter.bind(this)
@@ -33,15 +32,15 @@ class App extends React.Component<IAppProps> {
         this.props.actions.increment()
     }
 
-    public decrementCounter() {
+    public decrementCounter(): void {
         this.props.actions.decrement()
     }
 
-    public resetCounter() {
+    public resetCounter(): void {
         this.props.actions.reset()
     }
 
-    public render() {
+    public render(): JSX.Element {
         const { counter } = store.getState()
 
         return (
@@ -71,6 +70,6 @@ class App extends React.Component<IAppProps> {
 }
 
 export default connect(
-    (state: IAppState) => store.getState(),
+    () => store.getState(),
     dispatch => ({ actions: bindActionCreators(actions, dispatch) }),
 )(App)

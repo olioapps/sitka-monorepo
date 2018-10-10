@@ -1,15 +1,15 @@
 {
-    "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+    "extends": "../../tslint.json",
+    "jsx-alignment": true,
+    "jsx-boolean-value": true,
+    "jsx-curly-spacing": [true, "never"],
+    "jsx-no-bind": true,
+    "jsx-no-lambda": true,
+    "jsx-no-multiline-js": false,
+    "jsx-no-string-ref": true,
+    "jsx-self-close": true,
+    "jsx-wrap-multiline": true,
     "linterOptions": {
-        "rules": {
-            "ordered-imports": [
-                false,
-                {
-                    "import-sources-order": "any",
-                    "named-imports-order": "case-insensitive"
-                }
-            ]
-        },
         "exclude": [
             "config/**/*.js",
             "node_modules/**/*.ts",

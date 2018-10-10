@@ -3,11 +3,11 @@ export interface IncrementAction {
     readonly type: string
 }
 
-export interface IDecrementAction {
+export interface DecrementAction {
     readonly type: string
 }
 
-export interface IResetAction {
+export interface ResetAction {
     readonly type: string
 }
 
@@ -15,17 +15,17 @@ const increment = (): IncrementAction => ({
     type: "INCREMENT",
 })
 
-const decrement = (): IDecrementAction => ({
+const decrement = (): DecrementAction => ({
     type: "DECREMENT",
 })
 
-const reset = (): IResetAction => ({
+const reset = (): ResetAction => ({
     type: "RESET",
 })
 
 const counter = (
     state = INITIAL_STATE.counter,
-    action: IncrementAction | IDecrementAction,
+    action: IncrementAction | DecrementAction,
 ): number => {
     switch (action.type) {
         case "INCREMENT":
