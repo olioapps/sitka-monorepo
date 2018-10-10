@@ -3,12 +3,14 @@
     "compilerOptions": {
         "baseUrl": ".",
         "outDir": "build/dist",
-        "rootDir": "src",
+        "module": "esnext",
+        "target": "es5",
         "lib": ["es6", "dom"],
         "sourceMap": true,
         "allowJs": true,
         "jsx": "react",
         "moduleResolution": "node",
+        "rootDir": "src",
         "forceConsistentCasingInFileNames": true,
         "importHelpers": true,
         "suppressImplicitAnyIndexErrors": true
@@ -20,6 +22,7 @@
         "acceptance-tests",
         "webpack",
         "jest",
-        "src/setupTests.ts"
+        "src/setupTests.ts",
+        "config"
     ]
 }
