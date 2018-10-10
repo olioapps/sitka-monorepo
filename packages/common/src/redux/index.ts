@@ -7,18 +7,18 @@ import { actions, counter } from "../redux/modules/counter"
 import createSagaMiddleware from "redux-saga"
 import rootSaga from "../redux/sagas"
 
-export interface IAppState {
+export interface AppState {
     readonly counter: number
 }
 
-const appState: IAppState = {
+const appState: AppState = {
     counter: 0,
 }
 
-const INITIAL_STATE: IAppState = appState
+const INITIAL_STATE: AppState = appState
 
 const appReducer: redux.Reducer = redux.combineReducers({ counter })
-const logger = createLogger({ stateTransformer: (state: IAppState) => state })
+const logger = createLogger({ stateTransformer: (state: AppState) => state })
 const sagaMiddleware = createSagaMiddleware()
 const middleware: ReadonlyArray<Middleware> = [sagaMiddleware, logger]
 
