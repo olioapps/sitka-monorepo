@@ -66,9 +66,17 @@
         "trailing-comma": [
             true,
             {
-                "multiline": "always",
+                "multiline": {
+                    "arrays": "always",
+                    "exports": "always",
+                    "functions": "ignore",
+                    "imports": "always",
+                    "objects": "always",
+                    "typeLiterals": "never"
+                },
                 "singleline": "never"
-            }
+            },
+            "ignore-interfaces"
         ],
         "triple-equals": [true, "allow-null-check"],
         "typedef": [
