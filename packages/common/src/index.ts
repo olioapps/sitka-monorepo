@@ -1,5 +1,34 @@
 // this is the source file while compiles @cashew/common, imported into web/
 
-import { actions, appState, INITIAL_STATE, store } from "./redux/index"
+import {
+    actions as importedActions,
+    appState,
+    AppState,
+    INITIAL_STATE,
+    runMiddleware,
+    store,
+    storeCreatorWrapper,
+} from "./redux/index"
 
-export { actions, appState, store, INITIAL_STATE }
+import {
+    DecrementAction,
+    IncrementAction,
+    ResetAction,
+} from "./redux/modules/counter"
+
+const actions = { ...importedActions }
+const defaultAppState = INITIAL_STATE
+
+export {
+    actions,
+    DecrementAction,
+    IncrementAction,
+    ResetAction,
+
+    defaultAppState,
+    runMiddleware,
+    store,
+    storeCreatorWrapper,
+    AppState,
+    appState,
+}

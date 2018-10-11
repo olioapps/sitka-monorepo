@@ -4,8 +4,9 @@ import {
     DecrementAction,
     IncrementAction,
     ResetAction,
-    store,
 } from "@cashew/common"
+
+import { store } from "./index"
 
 import * as React from "react"
 import { connect } from "react-redux"
