@@ -5,7 +5,8 @@
     "typings": "dist/index.d.ts",
     "license": "MIT",
     "devDependencies": {
-        "@types/node": "^10.3.2",
+        "@types/node": "^10.11.7",
+        "jest": "^23.6.0",
         "typescript": "^3.1.1"
     },
     "scripts": {
@@ -29,6 +30,6 @@
         "tslint": "^5.11.0",
         "tslint-config-prettier": "^1.15.0",
         "tslint-loader": "^3.5.4",
-        "typescript": "^3.1.2"
+        "typescript": "^3.1.1"
     }
 }
