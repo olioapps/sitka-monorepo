@@ -24,7 +24,8 @@
             "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
         },
         "testPathIgnorePatterns": [
-            "<rootDir>/.history"
+            "<rootDir>/.history",
+            "dist"
         ],
         "testRegex": "/__tests__/.*\\.(ts|tsx|js)$"
     }
