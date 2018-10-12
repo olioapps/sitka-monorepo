@@ -5,9 +5,25 @@
   ],
   "scripts": {
     "build": "lerna run build",
-    "start-web": "cd packages/web; react-scripts-ts start"
+    "start-web": "cd packages/web; react-scripts-ts start",
+    "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'",
+    "pretest": "npm run lint",
+    "test": "jest"
   },
   "devDependencies": {
-    "lerna": "^2.11.0"
+    "jest-cli": "^20.0.4",
+    "lerna": "^2.11.0",
+    "ts-jest": "^23.10.4"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "/__tests__/.*\\.(ts|tsx|js)$"
   }
 }
