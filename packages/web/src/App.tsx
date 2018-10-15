@@ -1,27 +1,47 @@
 import {
     actions,
-    AppState,
-    DecrementAction,
-    IncrementAction,
-    ResetAction,
+    // AppState,
+    // DecrementAction,
+    // IncrementAction,
+    // ResetAction,
+    // reduxDispatch,
 } from "@cashew/common"
 
-import { store } from "./index"
-
 import * as React from "react"
+
+// import { AnyAction } from "redux"
 import { connect } from "react-redux"
+import { store } from "./index"
 import { bindActionCreators } from "redux"
-import "./App.css"
 import logo from "./logo.svg"
+import "./App.css"
 
 interface AppProps {
-    readonly appState: AppState
     readonly actions: {
-        increment: () => IncrementAction
-        decrement: () => DecrementAction
-        reset: () => ResetAction
+        incrementBy: (counter: number) => void
+        decrement: () => void
+        reset: () => void
+        incrementOther: () => void
     }
+    readonly reducer: {
+        counter: number
+    }
+    // readonly actionTypes: {
+    //     increment: string
+    //     decrement: string
+    //     decrementBy20: string
+    //     reset: string
+    // }
 }
+
+// const actions: {
+//     incrementOther: () => ActionWithPayload<undefined, any>;
+//     increment: () => ActionWithPayload<undefined, any>;
+//     incrementBy: (payload: number) => ActionWithPayload<number, any>;
+//     decrement: () => ActionWithPayload<...>;
+//     decrementBy20: () => ActionWithPayload<...>;
+//     reset: () => ActionWithPayload<...>;
+// }
 
 class App extends React.Component<AppProps> {
     constructor(props: AppProps) {
@@ -33,7 +53,7 @@ class App extends React.Component<AppProps> {
     }
 
     public incrementCounter(): void {
-        this.props.actions.increment()
+        this.props.actions.incrementBy(12)
     }
 
     public decrementCounter(): void {
@@ -45,14 +65,17 @@ class App extends React.Component<AppProps> {
     }
 
     public render(): JSX.Element {
-        const { counter } = store.getState()
-
+        const { actions: a, reducer } = this.props
+        /* tslint:disable */
+        debugger
+        console.log(a)
+        /* tslint:enable */
         return (
             <div className="App">
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo" />
                     <h1 className="App-title">
-                        Welcome to React Counter => {counter}
+                        Welcome to React Counter => {reducer.counter}
                     </h1>
                 </header>
                 <div className="wrap">
