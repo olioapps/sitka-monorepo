@@ -2,16 +2,13 @@ import * as redux from "redux"
 import { combineHandlers } from "redux-instant"
 import { applyMiddleware, createStore, Middleware } from "redux"
 import { createLogger } from "redux-logger"
+import createSagaMiddleware, { SagaMiddleware } from "redux-saga"
+import rootSaga from "../redux/sagas"
+
 import {
-    // counter,
     counterHandlers,
     otherHandlers,
 } from "../redux/modules/counter"
-// import { counterHandlers, otherHandlers } from "../redux/modules/counter"
-
-// begin imports without special characters
-import createSagaMiddleware, { SagaMiddleware } from "redux-saga"
-import rootSaga from "../redux/sagas"
 
 export interface AppState {
     readonly counter: number
@@ -34,12 +31,13 @@ const { actions, actionTypes, reducer } = combineHandlers(
     handlers,
 )
 
-// maybe change the thing here?
 const appReducer: redux.Reducer = redux.combineReducers({ reducer })
+
+// middleware
+const sagaMiddleware: SagaMiddleware<{}> = createSagaMiddleware()
 const logger: Middleware = createLogger({
     stateTransformer: (state: AppState) => state,
 })
-const sagaMiddleware: SagaMiddleware<{}> = createSagaMiddleware()
 const commonMiddleware: ReadonlyArray<Middleware> = [sagaMiddleware, logger]
 
 const createStoreWithMiddleware = createStore(
@@ -50,8 +48,6 @@ const createStoreWithMiddleware = createStore(
 
 const store = createStoreWithMiddleware
 
-// fn that returns a wrapped store creator
-// storeCreatorWrapper :: clientMiddleware -> () -> sreateStoreWithMiddleWAre
 const storeCreatorWrapper = (clientMiddleWare?: ReadonlyArray<Middleware>) => {
     const combinedMiddleware = clientMiddleWare
         ? [...commonMiddleware, ...clientMiddleWare]
@@ -66,9 +62,6 @@ const storeCreatorWrapper = (clientMiddleWare?: ReadonlyArray<Middleware>) => {
 }
 
 const runMiddleware = () => sagaMiddleware.run(rootSaga)
-
-// fn that accepts middleware and returns a created store
-// storeCreator :: fn, Middleware -> redux.Store<any, redux.AnyAction> & { dispatch: {} }
 
 export {
     actions,
