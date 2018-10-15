@@ -1,4 +1,4 @@
-import { INITIAL_STATE } from "../../redux"
+import { AppState, INITIAL_STATE } from "../../redux"
 export interface IncrementAction {
     readonly type: string
 }
@@ -11,17 +11,59 @@ export interface ResetAction {
     readonly type: string
 }
 
-const increment = (): IncrementAction => ({
-    type: "INCREMENT",
-})
+// const increment = (): IncrementAction => ({
+//     type: "INCREMENT",
+// })
 
-const decrement = (): DecrementAction => ({
-    type: "DECREMENT",
-})
+// const decrement = (): DecrementAction => ({
+//     type: "DECREMENT",
+// })
 
-const reset = (): ResetAction => ({
-    type: "RESET",
-})
+// const reset = (): ResetAction => ({
+//     type: "RESET",
+// })
+
+const counterHandlers = {
+    increment(state: AppState) {
+        return {
+            ...state,
+            counter: state.counter + 1,
+        }
+    },
+    incrementBy(state: AppState, counterState: number) {
+        return {
+            ...state,
+            counter: state.counter + counterState,
+        }
+    },
+    decrement(state: AppState) {
+        return {
+            ...state,
+            counter: state.counter - 1,
+        }
+    },
+    decrementBy20(state: AppState) {
+        return {
+            ...state,
+            counter: state.counter - 20,
+        }
+    },
+    reset(state: AppState) {
+        return {
+            ...state,
+            counter: 0,
+        }
+    },
+}
+
+const otherHandlers = {
+    incrementOther(state: AppState) {
+        return {
+            ...state,
+            counter: state.counter + 1,
+        }
+    },
+}
 
 const counter = (
     state = INITIAL_STATE.counter,
@@ -39,6 +81,4 @@ const counter = (
     }
 }
 
-const actions = { increment, decrement, reset }
-
-export { actions, counter }
+export { counter, counterHandlers, otherHandlers }
