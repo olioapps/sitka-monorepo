@@ -59,6 +59,9 @@
             "check-open-brace",
             "check-whitespace"
         ],
+        "ordered-imports": [
+			false
+		],
         "quotemark": [true, "double", "jsx-double"],
         "radix": true,
         "semicolon": [false, "never"],
@@ -72,11 +75,11 @@
                     "functions": "ignore",
                     "imports": "always",
                     "objects": "always",
-                    "typeLiterals": "never"
+                    "typeLiterals": "never",
+                    "interfaces": "never"
                 },
                 "singleline": "never"
             },
-            "ignore-interfaces"
         ],
         "triple-equals": [true, "allow-null-check"],
         "typedef": [
