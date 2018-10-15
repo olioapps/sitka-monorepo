@@ -28,5 +28,8 @@
             "dist"
         ],
         "testRegex": "/__tests__/.*\\.(ts|tsx|js)$"
+    },
+    "dependencies": {
+        "redux-instant": "^1.1.0"
     }
 }
