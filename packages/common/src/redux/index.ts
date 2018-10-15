@@ -55,7 +55,7 @@ const storeCreatorWrapper = (clientMiddleWare?: ReadonlyArray<Middleware>) => {
 
     return () =>
         createStore(
-            appReducer as redux.Reducer<{}, redux.AnyAction>, // appReducer,
+            appReducer as redux.Reducer<{}, redux.AnyAction>,
             {}, // INITIAL_STATE as redux.DeepPartial<{}>,
             applyMiddleware(...combinedMiddleware),
         )
