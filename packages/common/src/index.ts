@@ -12,19 +12,10 @@ import {
     reducer,
 } from "./redux/index"
 
-import {
-    DecrementAction,
-    IncrementAction,
-    ResetAction,
-} from "./redux/modules/counter"
-
 const defaultAppState = INITIAL_STATE
 
 export {
     actions,
-    DecrementAction,
-    IncrementAction,
-    ResetAction,
     actionTypes,
     defaultAppState,
     runMiddleware,
