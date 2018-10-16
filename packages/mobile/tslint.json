@@ -1,5 +1,5 @@
 {
-    "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+    "extends": ["tslint:recommended", "tslint-react", "tslint-immutable"],
     "rules": {
         "align": [true, "parameters", "arguments", "statements"],
         "ban": false,
