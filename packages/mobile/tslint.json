@@ -15,6 +15,13 @@
         "jsx-no-string-ref": true,
         "jsx-self-close": true,
         "jsx-wrap-multiline": true,
+        "linterOptions": {
+            "exclude": [
+                "config/**/*.js",
+                "node_modules/**/*.ts",
+                "coverage/lcov-report/*.js"
+            ]
+        },
         "curly": true,
         "eofline": false,
         "forin": true,
