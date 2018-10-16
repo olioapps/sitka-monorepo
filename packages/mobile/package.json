@@ -27,10 +27,17 @@
   "devDependencies": {
     "@types/jest": "^23.3.5",
     "@types/node": "^10.11.7",
+    "@types/react": "^16.4.16",
     "@types/react-native": "^0.57.6",
     "@types/react-test-renderer": "^16.0.3",
+    "babel-preset-react-native": "^4.0.1",
     "concurrently": "^4.0.1",
+    "jest": "^23.6.0",
+    "react-test-renderer": "^16.5.2",
     "rimraf": "^2.6.2",
-    "ts-jest": "^23.10.4"
+    "ts-jest": "^23.10.4",
+    "tslint": "^5.11.0",
+    "tslint-loader": "^3.5.4",
+    "tslint-react": "^3.6.0"
   }
 }
