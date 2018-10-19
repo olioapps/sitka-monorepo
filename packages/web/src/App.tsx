@@ -1,4 +1,7 @@
 import {
+    Sitka,
+    SitkaModules,
+    // sitkaModules as modules,
     TestState,
 } from "@cashew/common"
 
@@ -8,7 +11,7 @@ import * as React from "react"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
 import "./App.css"
-import { Sitka, SitkaModules, sitkaModules } from "./index"
+import {  } from "./index"
 import logo from "./logo.svg"
 
 interface AppProps {
@@ -61,5 +64,5 @@ class App extends React.Component<AppProps> {
 
 export default connect(
     () => store.getState(),
-    dispatch => ({ actions: bindActionCreators(sitkaModules.test.handleIncrementCount, dispatch) }),
+    dispatch => ({ actions: bindActionCreators(modules.test.handleIncrementCount, dispatch) }),
 )(App)

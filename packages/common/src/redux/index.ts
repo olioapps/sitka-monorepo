@@ -33,7 +33,7 @@ const createStoreWithMiddleware = createStore(
 const store = createStoreWithMiddleware
 
 // fn that returns a wrapped store creator
-// storeCreatorWrapper :: clientMiddleware -> () -> sreateStoreWithMiddleWAre
+// storeCreatorWrapper :: clientMiddleware? -> () -> createStoreWithMiddleWare
 const storeCreatorWrapper = (clientMiddleWare?: ReadonlyArray<Middleware>) => {
     const combinedMiddleware = clientMiddleWare
         ? [...commonMiddleware, ...clientMiddleWare]
