@@ -15,6 +15,11 @@
         "importHelpers": true,
         "suppressImplicitAnyIndexErrors": true
     },
+    "rules": {
+        "ordered-imports": [
+            false,
+        ]
+    },
     "exclude": [
         "node_modules",
         "build",

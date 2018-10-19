@@ -11,11 +11,15 @@ import {
 } from "./redux/index"
 
 import {
-    ConnectedClass,
-    ConnectedClassAction,
+    modules,
+    otherDefaultState,
+    OtherState,
+    sitka,
     Sitka,
     SitkaMeta,
-} from "./sitka/sitka"
+    SitkaModules,
+    TestState,
+} from "./sitka/index"
 
 import {
     DecrementAction,
@@ -37,9 +41,13 @@ export {
     storeCreatorWrapper,
     AppState,
     appState,
-    // sitka
-    ConnectedClass,
-    ConnectedClassAction,
+
     Sitka,
     SitkaMeta,
+    modules,
+    sitka,
+    SitkaModules,
+    otherDefaultState,
+    OtherState,
+    TestState,
 }

@@ -146,15 +146,15 @@ export class Sitka<T = {}, A = {}> {
             const reduxKey: string = instance.reduxKey()
             const defaultState = instance.defaultState()
 
-            const makeReducer = (reduxKey: string) => {
+            const makeReducer = (_reduxKey: string) => {
                 const prevReducer: (state: F, action: Action) => F =
-                    reducersToCombine[reduxKey]
+                    reducersToCombine[_reduxKey]
 
                 const reducer = (
                     state: F = defaultState,
                     action: Action,
                 ): F => {
-                    if (action.type !== reduxKey) {
+                    if (action.type !== _reduxKey) {
                         return state
                     }
 
@@ -193,7 +193,7 @@ export class Sitka<T = {}, A = {}> {
     }
 
     private *root(): IterableIterator<{}> {
-        const toYield = []
+        const toYield: any[] = []
         const { registeredModules } = this
 
         /* tslint:disable */
@@ -203,7 +203,8 @@ export class Sitka<T = {}, A = {}> {
                 const instance: {} = registeredModules[action._instance]
                 yield apply(instance, s.handler, action._args)
             }
-            toYield.push(yield takeEvery(s.name, generator))
+            const item: any = yield takeEvery(s.name, generator)
+            toYield.push(item)
         }
         /* tslint:enable */
 
