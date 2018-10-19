@@ -11,7 +11,7 @@
         "strictNullChecks": true,
         "strictFunctionTypes": true,
         "alwaysStrict": true,
-        "noImplicitAny": true,
+        "noImplicitAny": false,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noImplicitThis": true,
