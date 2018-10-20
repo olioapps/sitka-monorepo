@@ -1,19 +1,19 @@
-import { modules, Sitka, sitka, SitkaModules } from "@cashew/common"
+import {
+    createCoreAppStore,
+} from "@cashew/common/src/index"
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 import { Provider } from "react-redux"
+import { Store } from "redux"
 import App from "./App"
 import "./index.css"
 import registerServiceWorker from "./registerServiceWorker"
 
-export const store = sitka.createStore()
-export type Sitka = Sitka
-export type SitkaModules = SitkaModules
-export const sitkaModules = modules
+const store: Store = createCoreAppStore()
 
 ReactDOM.render(
     <Provider store={store}>
-        <App sitka={sitka} modules={modules} />
+        <App />
     </Provider>,
     document.getElementById("root") as HTMLElement,
 )

@@ -1,59 +1,56 @@
 import {
-    AppState,
-    modules,
-    // sitkaModules as modules,
     Sitka,
-    SitkaModules,
-    TestState,
-} from "@cashew/common"
+} from "@cashew/common/src/lib/sitka/sitka"
+
+import {
+    AppModules,
+    AppState,
+} from "@cashew/common/src/core/index"
+
+import {
+    ColorState,
+} from "@cashew/common/src/core/modules/color/color"
 
 import * as React from "react"
+
 import { connect } from "react-redux"
-import { bindActionCreators } from "redux"
+
 import "./App.css"
-// import {  } from "./index"
+
 import logo from "./logo.svg"
 
-interface AppProps {
-    readonly sitka: Sitka
-    readonly modules: SitkaModules
-}
-
 interface ReduxState {
-    readonly test: TestState
+    readonly color: ColorState
+    readonly sitka: Sitka<AppModules>
 }
 
-type ComponentProps = AppProps & ReduxState
+type ComponentProps = ReduxState
 class App extends React.Component<ComponentProps> {
     constructor(props: ComponentProps) {
         super(props)
     }
 
     public render(): JSX.Element {
-        const { test } = this.props.modules
-        const { test: testState } = this.props
-        /* tslint:disable */
-        debugger
-        /* tslint:enable */
+        const { color, sitka } = this.props
+        const modules: AppModules = sitka.getModules()
+        const handleColor = () => modules.color.handleColor("red")
 
         return (
             <div className="App">
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo" />
                     <h1 className="App-title">
-                        Welcome to React Counter {testState && testState.count}
+                        Welcome to React
                     </h1>
+                    <div>
+                        {`Color: ${color.color}`}
+                    </div>
                 </header>
                 <div className="wrap">
                     <div className="wrap-btns">
-                        {/* <button onClick={this.incrementCounter} id="increment"> */}
-                        <button id="increment" onClick={test.handleIncrementCount}>
+                        <button id="increment" onClick={ handleColor }>
                             +
                         </button>
-                        {/* <button onClick={this.decrementCounter} id="decrement"> */}
-                        {/* <button id="decrement">-</button> */}
-                        {/* <button onClick={this.resetCounter} id="reset"> */}
-                        {/* <button id="reset">Reset</button> */}
                     </div>
                 </div>
             </div>
@@ -65,8 +62,9 @@ class App extends React.Component<ComponentProps> {
 export default connect(
     (state: AppState): ReduxState => {
         return {
-            test: state.test,
+            color: state.color,
+            sitka: state.sitka,
         }
     },
-    dispatch => ({ actions: bindActionCreators(modules.test.handleIncrementCount, dispatch) }),
+    null,
 )(App)

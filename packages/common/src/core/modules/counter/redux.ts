@@ -1,4 +1,3 @@
-import { INITIAL_STATE } from "../../redux"
 export interface IncrementAction {
     readonly type: string
 }
@@ -23,8 +22,12 @@ const reset = (): ResetAction => ({
     type: "RESET",
 })
 
+const defaultState = {
+    counter: 0,
+}
+
 const counter = (
-    state = INITIAL_STATE.counter,
+    state = defaultState.counter,
     action: IncrementAction | DecrementAction,
 ): number => {
     switch (action.type) {
@@ -33,7 +36,7 @@ const counter = (
         case "DECREMENT":
             return state - 1
         case "RESET":
-            return INITIAL_STATE.counter
+            return defaultState.counter
         default:
             return state
     }
@@ -41,4 +44,4 @@ const counter = (
 
 const actions = { increment, decrement, reset }
 
-export { actions, counter }
+export { actions, counter, defaultState }

@@ -2,19 +2,25 @@ import {
     Action,
     combineReducers,
     createStore,
+    Dispatch,
     ReducersMapObject,
     Store,
-    Dispatch,
 } from "redux"
+
 import { applyMiddleware } from "redux"
+
 import { createLogger } from "redux-logger"
+
 import createSagaMiddleware from "redux-saga"
+
 import { all, apply, takeEvery } from "redux-saga/effects"
+
+// type BaseMap<T = any> = { [key: string]: T }
 
 export type SitkaModuleAction<T> = Partial<T> & { type: string }
 
-export abstract class SitkaModule<T, X extends Sitka> {
-    public sitka: X | undefined
+export abstract class SitkaModule<MODULE_STATE, MODULES> {
+    public modules?: MODULES
 
     public abstract moduleName(): string
 
@@ -23,9 +29,9 @@ export abstract class SitkaModule<T, X extends Sitka> {
         return this.moduleName()
     }
 
-    public abstract defaultState(): T
+    public abstract defaultState(): MODULE_STATE
 
-    public createAction(v: Partial<T>): SitkaModuleAction<T> {
+    public createAction(v: Partial<MODULE_STATE>): SitkaModuleAction<MODULE_STATE> {
         return Object.assign({ type: this.reduxKey() }, v)
     }
 }
@@ -49,33 +55,33 @@ export class SitkaMeta {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-export class Sitka<T = {}> {
+export class Sitka<MODULES = {}> {
     // tslint:disable-next-line:no-any
     private sagaMiddleware: any
     private sagas: SagaMeta[] = []
     private reducersToCombine: ReducersMapObject = {}
-    protected registeredModules: T
+    protected registeredModules: MODULES
     private dispatch?: Dispatch
 
     constructor() {
         this.doDispatch = this.doDispatch.bind(this)
-        this.root = this.root.bind(this)
         this.createStore = this.createStore.bind(this)
-        this.registeredModules = {} as T
+        this.createRoot = this.createRoot.bind(this)
+        this.registeredModules = {} as MODULES
     }
 
     public setDispatch(dispatch: Dispatch): void {
         this.dispatch = dispatch
     }
 
-    public getModules(): T {
+    public getModules(): MODULES {
         return this.registeredModules
     }
 
     public createSitkaMeta(): SitkaMeta {
         return {
             reducersToCombine: this.reducersToCombine,
-            sagaRoot: this.root,
+            sagaRoot: this.createRoot(),
         }
     }
 
@@ -86,21 +92,37 @@ export class Sitka<T = {}> {
 
         this.sagaMiddleware = createSagaMiddleware()
         const middleware = [this.sagaMiddleware, logger]
+
+        /*tslint:disable*/
         const store: Store = createStore(
-            combineReducers(this.reducersToCombine),
+            combineReducers({
+                ...this.reducersToCombine,
+                sitka: (
+                    state: { sitka: Sitka<MODULES> } = {sitka: new Sitka<MODULES>()},
+                    action: Action & {
+                        sitka,
+                    },
+                ): { sitka: Sitka<MODULES> } => {
+                    if (action.type !== "SITKA") {
+                        return state
+                    }
+    
+                    return {...state, sitka: action.sitka}
+                }
+            }),
             applyMiddleware(...middleware),
         )
+        /*tslint:disable*/
 
         this.dispatch = store.dispatch
-
-        this.sagaMiddleware.run(this.root)
+        this.sagaMiddleware.run(this.createRoot())
 
         return store
     }
 
-    public register<F, T extends SitkaModule<F, this>>(
-        instance: T,
-    ): T {
+    public register<MODULE_STATE, SITKA_MODULE extends SitkaModule<MODULE_STATE, MODULES>>(
+        instance: SITKA_MODULE,
+    ): SITKA_MODULE {
         const methodNames = Sitka.getInstanceMethodNames(
             instance,
             Object.prototype,
@@ -110,7 +132,7 @@ export class Sitka<T = {}> {
         const moduleName = instance.moduleName()
         const { sagas, reducersToCombine, doDispatch: dispatch } = this
 
-        instance.sitka = this
+        instance.modules = this.getModules()
 
         handlers.forEach(s => {
             // tslint:disable:ban-types
@@ -141,13 +163,13 @@ export class Sitka<T = {}> {
             const defaultState = instance.defaultState()
 
             const makeReducer = (_reduxKey: string) => {
-                const prevReducer: (state: F, action: Action) => F =
+                const prevReducer: (state: MODULE_STATE, action: Action) => MODULE_STATE =
                     reducersToCombine[_reduxKey]
 
                 const reducer = (
-                    state: F = defaultState,
+                    state: MODULE_STATE = defaultState,
                     action: Action,
-                ): F => {
+                ): MODULE_STATE => {
                     if (action.type !== _reduxKey) {
                         return state
                     }
@@ -162,7 +184,7 @@ export class Sitka<T = {}> {
                         }
                     }
 
-                    const newState: F = Object.keys(action)
+                    const newState: MODULE_STATE = Object.keys(action)
                         .filter(k => k !== "type")
                         .reduce(
                             (acc, k) =>
@@ -170,7 +192,7 @@ export class Sitka<T = {}> {
                                     [k]: action[k],
                                 }),
                             Object.assign({}, state),
-                        ) as F
+                        ) as MODULE_STATE
 
                     return newState
                 }
@@ -186,28 +208,34 @@ export class Sitka<T = {}> {
         return instance
     }
 
-    private *root(): IterableIterator<{}> {
-        const toYield: any[] = []
-        const { registeredModules } = this
-
-        /* tslint:disable */
-        for (let i = 0; i < this.sagas.length; i++) {
-            const s = this.sagas[i]
-            const generator = function*(action: any): {} {
-                const instance: {} = registeredModules[action._instance]
-                yield apply(instance, s.handler, action._args)
-            }
-            const item: any = yield takeEvery(s.name, generator)
-            toYield.push(item)
-        }
-        /* tslint:enable */
-
-        yield all(toYield)
-    }
-
     private static hasMethod = (obj: {}, name: string) => {
         const desc = Object.getOwnPropertyDescriptor(obj, name)
         return !!desc && typeof desc.value === "function"
+    }
+
+    private createRoot(): (() => IterableIterator<{}>) {
+        const { sagas, registeredModules } = this
+
+        function* root(): IterableIterator<{}> {
+
+            /* tslint:disable */
+            const toYield: any[] = []
+    
+            for (let i = 0; i < sagas.length; i++) {
+                const s = sagas[i]
+                const generator = function*(action: any): {} {
+                    const instance: {} = registeredModules[action._instance]
+                    yield apply(instance, s.handler, action._args)
+                }
+                const item: any = yield takeEvery(s.name, generator)
+                toYield.push(item)
+            }
+            /* tslint:enable */
+    
+            yield all(toYield)
+        }
+
+        return root
     }
 
     private static getInstanceMethodNames = (obj: {}, stop: {}) => {
