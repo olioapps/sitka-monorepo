@@ -12,6 +12,10 @@ import {
     Vaccines,
 } from "@cashew/common/dist/core/modules/pets/pets"
 
+import {
+    ColorState,
+} from "@cashew/common/dist/core/modules/color/color"
+
 import * as React from "react"
 
 import { connect } from "react-redux"
@@ -23,7 +27,7 @@ import "./App.css"
 import logo from "./logo.svg"
 
 interface ReduxState {
-    readonly color: string
+    readonly color: ColorState
     readonly counter: number
     readonly modules: AppModules
     readonly pets: PetState

@@ -17,7 +17,9 @@ import { all, apply, takeEvery } from "redux-saga/effects"
 
 export type SitkaModuleAction<T> = Partial<T> & { type: string } | Action
 
-export abstract class SitkaModule<MODULE_STATE, MODULES> {
+type ModuleState = {} | undefined | null
+
+export abstract class SitkaModule<MODULE_STATE extends ModuleState, MODULES> {
     public modules?: MODULES
 
     public abstract moduleName(): string
@@ -30,6 +32,10 @@ export abstract class SitkaModule<MODULE_STATE, MODULES> {
     public abstract defaultState(): MODULE_STATE
 
     public createAction(v: Partial<MODULE_STATE>): SitkaModuleAction<MODULE_STATE> {
+        if (!v) {
+            return { type: this.reduxKey(), [this.reduxKey()]: null }
+        }
+
         if (typeof v !== "object") {
             return { type: this.reduxKey(), [this.reduxKey()]: v }
         } else {
@@ -110,7 +116,7 @@ export class Sitka<MODULES = {}> {
         return store
     }
 
-    public register<MODULE_STATE, SITKA_MODULE extends SitkaModule<MODULE_STATE, MODULES>>(
+    public register<SITKA_MODULE extends SitkaModule<ModuleState, MODULES>>(
         instance: SITKA_MODULE,
     ): SITKA_MODULE {
         const methodNames = Sitka.getInstanceMethodNames(
@@ -153,13 +159,13 @@ export class Sitka<MODULES = {}> {
             const defaultState = instance.defaultState()
 
             const makeReducer = (_reduxKey: string) => {
-                const prevReducer: (state: MODULE_STATE, action: Action) => MODULE_STATE =
+                const prevReducer: (state: ModuleState, action: Action) => ModuleState =
                     reducersToCombine[_reduxKey]
 
                 const reducer = (
-                    state: MODULE_STATE = defaultState,
+                    state: ModuleState = defaultState,
                     action: Action,
-                ): MODULE_STATE => {
+                ): ModuleState => {
                     if (action.type !== _reduxKey) {
                         return state
                     }
@@ -174,11 +180,14 @@ export class Sitka<MODULES = {}> {
                         }
                     }
 
-                    const newState: MODULE_STATE = Object.keys(action)
+                    const newState: ModuleState = Object.keys(action)
                         .filter(k => k !== "type")
                         .reduce(
                             (acc, k) => {
                                 const val = action[k]
+                                if (!val) {
+                                    return null
+                                }
                                 if (typeof val !== "object") {
                                     return val
                                 }
@@ -187,7 +196,7 @@ export class Sitka<MODULES = {}> {
                                 })
                             },
                             Object.assign({}, state),
-                        ) as MODULE_STATE
+                        ) as ModuleState
 
                     return newState
                 }

@@ -1,5 +1,6 @@
 import { 
     ColorModule, 
+    ColorState,
 } from "./modules/color/color"
 
 import { 
@@ -36,7 +37,7 @@ export interface AppModules {
 }
 
 export interface AppState {
-    readonly color: string
+    readonly color: ColorState
     readonly pets: PetState
     readonly counter: number
     readonly sitka: Sitka<AppModules>
@@ -56,7 +57,7 @@ sitka.register(petModule)
 
 const sitkaMeta = sitka.createSitkaMeta()
 const sitkaState = {
-    color: "",
+    color: "red-changeme",
     pets:  { ...petModule.defaultState() },
 }
 const sitkaReducers = {
