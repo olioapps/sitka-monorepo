@@ -57,7 +57,7 @@ class App extends React.Component<ComponentProps> {
         } = this.props
 
         const handleColor = () => this.props.handleColor("red")
-        const handlePet = () => this.props.handleColor("marz")
+        const handlePet = () => this.props.handlePet("marz")
         const handleUpdatePetEvil = () => this.props.handleUpdatePetEvil()
 
         return (
