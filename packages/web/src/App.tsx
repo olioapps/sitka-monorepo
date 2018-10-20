@@ -1,8 +1,4 @@
 import {
-    Sitka,
-} from "@cashew/common/dist/lib/sitka/sitka"
-
-import {
     AppModules,
     AppState,
 } from "@cashew/common/dist/core/index"
@@ -32,9 +28,12 @@ import logo from "./logo.svg"
 
 interface ReduxState {
     readonly color: ColorState
+    readonly counter: number
+    readonly modules: AppModules
     readonly pets: PetState
-    readonly counter: number,
-    readonly sitka: Sitka<AppModules>
+    readonly handleColor: (c: string) => void
+    readonly handlePet: (p: string) => void
+    readonly handleUpdatePetEvil: () => void
 }
 
 interface ReduxActions {
@@ -49,11 +48,17 @@ class App extends React.Component<ComponentProps> {
     }
 
     public render(): JSX.Element {
-        const { color, counter, sitka, increment, decrement, pets } = this.props
-        const modules: AppModules = sitka.getModules()
-        const handleColor = () => modules.color.handleColor("red")
-        const handlePet = () => modules.pets.handlePet("marz")
-        const handleEvil = () => modules.pets.handleUpdatePetEvil()
+        const { 
+            color, 
+            counter, 
+            pets,  
+            increment, 
+            decrement, 
+        } = this.props
+
+        const handleColor = () => this.props.handleColor("red")
+        const handlePet = () => this.props.handleColor("marz")
+        const handleUpdatePetEvil = () => this.props.handleUpdatePetEvil()
 
         return (
             <div className="App">
@@ -86,7 +91,7 @@ class App extends React.Component<ComponentProps> {
                         <button id="pet" onClick={ handlePet }>
                             Update pet
                         </button>
-                        <button id="evil" onClick={ handleEvil }>
+                        <button id="evil" onClick={ handleUpdatePetEvil }>
                             Make pet evil
                         </button>
                     </div>
@@ -104,11 +109,15 @@ class App extends React.Component<ComponentProps> {
 
 export default connect(
     (state: AppState): ReduxState => {
+        const modules = state.sitka.getModules()
         return {
             color: state.color,
             counter: state.counter,
+            handleColor: modules.color.handleColor,
+            handlePet: modules.pets.handlePet,
+            handleUpdatePetEvil: modules.pets.handleUpdatePetEvil,
+            modules: state.sitka.getModules(),
             pets: state.pets,
-            sitka: state.sitka,
         }
     },
     (dispatch: Dispatch<Action>): ReduxActions => ({
