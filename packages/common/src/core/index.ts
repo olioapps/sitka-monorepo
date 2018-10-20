@@ -71,7 +71,7 @@ const defaultAppState: AppState = {
 
 ////////////////////////////////////////////////////////////////////
 
-const createCoreAppStore = (
+export const createCoreAppStore = (
     middleware?: Middleware[],
     reducersToCombine?: ReducersMapObject[],
     sagaRoot?: () => {},
@@ -84,7 +84,7 @@ const createCoreAppStore = (
         yield call(sitkaMeta.sagaRoot)
     }
 
-    return createAppStore(
+    const store = createAppStore(
         defaultAppState,
         [ ...middleware || [] ],
         [ 
@@ -94,8 +94,8 @@ const createCoreAppStore = (
         ],
         root,
     )
-}
 
-export {
-    createCoreAppStore,
+    sitka.setDispatch(store.dispatch)
+
+    return store
 }

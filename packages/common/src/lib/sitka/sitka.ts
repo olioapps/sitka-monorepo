@@ -15,8 +15,6 @@ import createSagaMiddleware from "redux-saga"
 
 import { all, apply, takeEvery } from "redux-saga/effects"
 
-// type BaseMap<T = any> = { [key: string]: T }
-
 export type SitkaModuleAction<T> = Partial<T> & { type: string }
 
 export abstract class SitkaModule<MODULE_STATE, MODULES> {

@@ -1,6 +1,6 @@
 import {
     createCoreAppStore,
-} from "@cashew/common/src/index"
+} from "@cashew/common/dist/core/index"
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 import { Provider } from "react-redux"

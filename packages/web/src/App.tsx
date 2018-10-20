@@ -1,15 +1,15 @@
 import {
     Sitka,
-} from "@cashew/common/src/lib/sitka/sitka"
+} from "@cashew/common/dist/lib/sitka/sitka"
 
 import {
     AppModules,
     AppState,
-} from "@cashew/common/src/core/index"
+} from "@cashew/common/dist/core/index"
 
 import {
     ColorState,
-} from "@cashew/common/src/core/modules/color/color"
+} from "@cashew/common/dist/core/modules/color/color"
 
 import * as React from "react"
 
@@ -43,13 +43,13 @@ class App extends React.Component<ComponentProps> {
                         Welcome to React
                     </h1>
                     <div>
-                        {`Color: ${color.color}`}
+                        Color {color.color}
                     </div>
                 </header>
                 <div className="wrap">
                     <div className="wrap-btns">
                         <button id="increment" onClick={ handleColor }>
-                            +
+                            Update color
                         </button>
                     </div>
                 </div>
