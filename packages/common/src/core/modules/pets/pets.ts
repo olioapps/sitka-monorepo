@@ -61,22 +61,23 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
     }
 
     // tslint:disable-next-line:no-unused-variable
-    private subscribeToSelfPetChange() {
-        return this.createSubscription("MODULE_PETS_CHANGE_STATE", function*(action: {}) {
-            console.log("heard MODULE_PETS_CHANGE_STATE!")
-            console.log("-->", action)
-        })
-    }
+    private subscribeToActions() {
+        // you can subscribe to multiple actions
+        const { moduleName } = this
 
-    // tslint:disable-next-line:no-unused-variable
-    private subscribeToIncrement() {
-        return this.createSubscription("INCREMENT", function*(action: IncrementAction) {
-            console.log("-->", action)
-        })
+        return [
+            this.createSubscription("MODULE_PETS_CHANGE_STATE", function*(action: {}) {
+                console.log(moduleName, "subscription heard -->", action)
+            }),
+
+            this.createSubscription("INCREMENT", function*(action: IncrementAction) {
+                console.log(moduleName, "subscription heard -->", action)
+            }),
+        ]
     }
 
     private *handleAlert(): {} {
-        alert("my pet is evil!")
+        alert("my pet turned evil!")
     }
 
     private getPet(state: AppState): PetState {

@@ -11,4 +11,15 @@ export class ColorModule extends SitkaModule<ColorState, AppModules> {
     public *handleColor(color: string): IterableIterator<{}> {
         yield put(this.setState(`${color}-${new Date().getTime()}`))
     }
+
+    // tslint:disable-next-line:no-unused-variable
+    private subscribeToActions() {
+        // you can subscribe to multiple actions
+        const { moduleName } = this
+        return [
+            this.createSubscription("INCREMENT", function*(action: {}) {
+                console.log(moduleName, "subscription heard -->", action)
+            }),
+        ]
+    }
 }

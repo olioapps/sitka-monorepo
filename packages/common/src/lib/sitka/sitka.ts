@@ -146,9 +146,8 @@ export class Sitka<MODULES = {}> {
             subscribers.forEach( s => {
                 // tslint:disable:ban-types
                 const original: Function = instance[s] // tslint:disable:no-any
-                const sagaMeta = original.call(instance)
-                console.log("-->", sagaMeta)
-                sagas.push(sagaMeta)
+                const sagaMeta: SagaMeta[] = original.call(instance)
+                sagas.push(...sagaMeta)
             })
     
             handlers.forEach(s => {
