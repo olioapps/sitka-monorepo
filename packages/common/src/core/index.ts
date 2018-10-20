@@ -4,6 +4,11 @@ import {
 } from "./modules/color/color"
 
 import { 
+    PetModule, 
+    PetState,
+} from "./modules/pets/pets"
+
+import { 
     Sitka, 
 } from "../lib/sitka/sitka"
 
@@ -28,10 +33,12 @@ import {
 
 export interface AppModules {
     readonly color: ColorModule
+    readonly pets: PetModule
 }
 
 export interface AppState {
     readonly color: ColorState
+    readonly pets: PetState
     readonly counter: number
     readonly sitka: Sitka<AppModules>
 }
@@ -44,11 +51,14 @@ export interface AppState {
 // setup sitka modules
 const sitka = new Sitka<AppModules>()
 const colorModule = new ColorModule()
+const petModule = new PetModule()
 sitka.register(colorModule)
+sitka.register(petModule)
 
 const sitkaMeta = sitka.createSitkaMeta()
 const sitkaState = {
     color: { ...colorModule.defaultState() },
+    pets:  { ...petModule.defaultState() },
 }
 const sitkaReducers = {
     ...sitkaMeta.reducersToCombine,

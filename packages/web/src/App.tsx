@@ -15,6 +15,10 @@ import {
     ColorState,
 } from "@cashew/common/dist/core/modules/color/color"
 
+import {
+    PetState,
+} from "@cashew/common/dist/core/modules/pets/pets"
+
 import * as React from "react"
 
 import { connect } from "react-redux"
@@ -27,6 +31,7 @@ import logo from "./logo.svg"
 
 interface ReduxState {
     readonly color: ColorState
+    readonly pets: PetState
     readonly counter: number,
     readonly sitka: Sitka<AppModules>
 }
@@ -43,9 +48,10 @@ class App extends React.Component<ComponentProps> {
     }
 
     public render(): JSX.Element {
-        const { color, counter, sitka, increment, decrement } = this.props
+        const { color, counter, sitka, increment, decrement, pets } = this.props
         const modules: AppModules = sitka.getModules()
         const handleColor = () => modules.color.handleColor("red")
+        const handlePet = () => modules.pets.handlePet("marz")
 
         return (
             <div className="App">
@@ -60,6 +66,9 @@ class App extends React.Component<ComponentProps> {
                     <div>
                         Number {counter}
                     </div>
+                    <div>
+                        Pet {pets.name} {pets.age}
+                    </div>
                 </header>
                 <div className="wrap">
                     <div className="wrap-btns">
@@ -71,6 +80,9 @@ class App extends React.Component<ComponentProps> {
                         </button>
                         <button id="decrement" onClick={ decrement }>
                             Decrement number
+                        </button>
+                        <button id="pet" onClick={ handlePet }>
+                            Update pet
                         </button>
                     </div>
                 </div>
@@ -84,6 +96,7 @@ export default connect(
         return {
             color: state.color,
             counter: state.counter,
+            pets: state.pets,
             sitka: state.sitka,
         }
     },
