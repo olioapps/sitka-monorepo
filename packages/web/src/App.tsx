@@ -1,79 +1,123 @@
 import {
-    actions,
     AppState,
-    DecrementAction,
-    IncrementAction,
-    ResetAction,
-} from "@cashew/common"
+} from "@cashew/common/dist/core/index"
 
-import { store } from "./index"
+import {
+    actions,
+} from "@cashew/common/dist/core/modules/counter/redux"
+
+import {
+    PetState,
+    Vaccines,
+} from "@cashew/common/dist/core/modules/pets/pets"
+
+import {
+    ColorState,
+} from "@cashew/common/dist/core/modules/color/color"
 
 import * as React from "react"
+
 import { connect } from "react-redux"
-import { bindActionCreators } from "redux"
+
+import { Action, Dispatch } from "redux"
+
 import "./App.css"
+
 import logo from "./logo.svg"
 
-interface AppProps {
-    readonly appState: AppState
-    readonly actions: {
-        increment: () => IncrementAction
-        decrement: () => DecrementAction
-        reset: () => ResetAction
-    }
+interface ReduxState {
+    readonly color: ColorState
+    readonly counter: number
+    readonly pets: PetState
+    readonly handleColor: (c: string) => void
+    readonly handlePet: (p: string) => void
+    readonly handleUpdatePetEvil: () => void
 }
 
-class App extends React.Component<AppProps> {
-    constructor(props: AppProps) {
+interface ReduxActions {
+    readonly decrement: () => void
+    readonly increment: () => void
+}
+
+type ComponentProps = ReduxState & ReduxActions
+class App extends React.Component<ComponentProps> {
+    constructor(props: ComponentProps) {
         super(props)
-
-        this.incrementCounter = this.incrementCounter.bind(this)
-        this.decrementCounter = this.decrementCounter.bind(this)
-        this.resetCounter = this.resetCounter.bind(this)
-    }
-
-    public incrementCounter(): void {
-        this.props.actions.increment()
-    }
-
-    public decrementCounter(): void {
-        this.props.actions.decrement()
-    }
-
-    public resetCounter(): void {
-        this.props.actions.reset()
     }
 
     public render(): JSX.Element {
-        const { counter } = store.getState()
+        const { 
+            color, 
+            counter, 
+            pets,  
+            increment, 
+            decrement, 
+        } = this.props
 
+        const handleColor = () => this.props.handleColor("red")
+        const handlePet = () => this.props.handlePet("marz")
+        const handleUpdatePetEvil = () => this.props.handleUpdatePetEvil()
         return (
             <div className="App">
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo" />
                     <h1 className="App-title">
-                        Welcome to React Counter => {counter}
+                        Welcome to React
                     </h1>
+                    <div>
+                        Color {color}
+                    </div>
+                    <div>
+                        Number {counter}
+                    </div>
+                    <div>
+                        Pet {pets.name} {pets.age} {this.renderVaccines(pets.vaccines)}
+                    </div>
                 </header>
                 <div className="wrap">
                     <div className="wrap-btns">
-                        <button onClick={this.incrementCounter} id="increment">
-                            +
+                        <button id="increment" onClick={ handleColor }>
+                            Update color
                         </button>
-                        <button onClick={this.decrementCounter} id="decrement">
-                            -
+                        <button id="increment" onClick={ increment }>
+                            Increment number
                         </button>
-                        <button onClick={this.resetCounter} id="reset">
-                            Reset
+                        <button id="decrement" onClick={ decrement }>
+                            Decrement number
+                        </button>
+                        <button id="pet" onClick={ handlePet }>
+                            Update pet
+                        </button>
+                        <button id="evil" onClick={ handleUpdatePetEvil }>
+                            Make pet evil
                         </button>
                     </div>
                 </div>
             </div>
         )
     }
+
+    private renderVaccines(vaccines: Vaccines): JSX.Element {
+        return (
+            <span>{JSON.stringify(vaccines)}</span>
+        )
+    }
 }
 
 export default connect(
-    () => store.getState(),
-    dispatch => ({ actions: bindActionCreators(actions, dispatch) }),
+    (state: AppState): ReduxState => {
+        const modules = state.__sitka__.getModules()
+        return {
+            color: state.color,
+            counter: state.counter,
+            handleColor: modules.color.handleColor,
+            handlePet: modules.pets.handlePet,
+            handleUpdatePetEvil: modules.pets.handleUpdatePetEvil,
+            pets: state.pets,
+        }
+    },
+    (dispatch: Dispatch<Action>): ReduxActions => ({
+        decrement: () => dispatch(actions.decrement()),
+        increment: () => dispatch(actions.increment()),
+    }),
 )(App)

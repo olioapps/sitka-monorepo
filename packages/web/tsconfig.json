@@ -13,7 +13,13 @@
         "rootDir": "src",
         "forceConsistentCasingInFileNames": true,
         "importHelpers": true,
-        "suppressImplicitAnyIndexErrors": true
+        "suppressImplicitAnyIndexErrors": true,
+        "strictPropertyInitialization": false,
+    },
+    "rules": {
+        "ordered-imports": [
+            false,
+        ]
     },
     "exclude": [
         "node_modules",
