@@ -13,7 +13,7 @@ export class ColorModule extends SitkaModule<ColorState, AppModules> {
     }
 
     // tslint:disable-next-line:no-unused-variable
-    private subscribeToActions() {
+    provideSubscriptions() {
         // you can subscribe to multiple actions
         const { moduleName } = this
         return [

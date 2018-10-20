@@ -53,9 +53,17 @@ export abstract class SitkaModule<MODULE_STATE extends ModuleState, MODULES> {
             direct: true,
         }
     }
-}
 
-interface SagaMeta {
+    provideMiddleware(): Middleware[] {
+       return [] 
+    }
+
+    provideSubscriptions(): SagaMeta[] {
+        return [] 
+     }
+ }
+
+export interface SagaMeta {
     // tslint:disable-next-line:no-any
     readonly handler: any
     readonly name: string
@@ -140,27 +148,16 @@ export class Sitka<MODULES = {}> {
             )
             const setters = methodNames.filter(m => m.indexOf("set") === 0)
             const handlers = methodNames.filter(m => m.indexOf("handle") === 0)
-            const subscribers = methodNames.filter(m => m.indexOf("subscribe") === 0)
-            const middlewares = methodNames.filter(m => m.indexOf("middleware") === 0)
+            const subscribers = instance.provideSubscriptions()
 
             const { moduleName } = instance
             const { middlewareToAdd, sagas, reducersToCombine, doDispatch: dispatch } = this
     
             instance.modules = this.getModules()
+            sagas.push(...subscribers)
 
-            subscribers.forEach( s => {
-                // tslint:disable:ban-types
-                const original: Function = instance[s] // tslint:disable:no-any
-                const sagaMeta: SagaMeta[] = original.call(instance)
-                sagas.push(...sagaMeta)
-            })
-
-            middlewares.forEach( s => {
-                // tslint:disable:ban-types
-                const original: Function = instance[s] // tslint:disable:no-any
-                middlewareToAdd.push(...original.call(instance))
-            })
-    
+            middlewareToAdd.push(...instance.provideMiddleware())
+            
             handlers.forEach(s => {
                 // tslint:disable:ban-types
                 const original: Function = instance[s] // tslint:disable:no-any

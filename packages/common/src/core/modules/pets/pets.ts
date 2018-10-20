@@ -5,7 +5,7 @@ import { put, select } from "redux-saga/effects"
 import { SitkaModule } from "../../../lib/sitka/sitka"
 import { IncrementAction } from "../counter/redux"
 
-import { Store, Action } from "redux"
+import { Dispatch, Action, Middleware, MiddlewareAPI } from "redux"
 
 export interface PetState {
     readonly name: string
@@ -63,7 +63,7 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
     }
 
     // tslint:disable-next-line:no-unused-variable
-    private subscribeToActions() {
+    provideSubscriptions() {
         // you can subscribe to multiple actions
         const { moduleName } = this
 
@@ -78,13 +78,12 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
         ]
     }
 
-    // tslint:disable-next-line:no-unused-variable
-    private middlewareProvider() {
+    provideMiddleware(): Middleware[] {
         const { moduleName } = this
 
         // these don't have to be inline here, they are for convenience
         return [
-            (store: Store<AppState>) => (next: Function) => (action: Action) => {
+            (store: MiddlewareAPI<Dispatch, AppState>) => (next: Function) => (action: Action) => {
                 console.log(moduleName, "middleware heard -->", action)
                 console.log(moduleName, "current state:", store.getState().pets)
                 return next(action)
