@@ -1,7 +1,5 @@
 import { AppModules, AppState } from "../../index"
 
-import { Action } from "redux"
-
 import { put, select } from "redux-saga/effects"
 
 import { SitkaModule } from "../../../lib/sitka/sitka"
@@ -32,7 +30,15 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
     }
 
     public *handlePet(name: string): {} {
-        yield put(this.setPet(`${name}-${new Date().getTime()}`))
+        yield put(this.setState({
+            name: `${name}-${new Date().getTime()}`,
+            age: new Date().getTime(),
+            vaccines: {
+                rabies: new Date().getTime() % 2 == 0,
+                evil: new Date().getTime() % 3 == 0,
+                gas: new Date().getTime() % 4 == 0,
+            },      
+        }))
     }
 
     public *handleUpdatePetEvil(): {} {
@@ -47,27 +53,10 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
             },
         }
 
-        yield put(this.setPetUpdate(updatedPet))
+        yield put(this.setState(updatedPet))
     }
 
     private getPet(state: AppState): PetState {
         return state.pets
-    }
-
-    private setPet(name: string): Action {
-        debugger
-        return this.createAction({
-            name, 
-            age: new Date().getTime(),
-            vaccines: {
-                rabies: new Date().getTime() % 2 == 0,
-                evil: new Date().getTime() % 3 == 0,
-                gas: new Date().getTime() % 4 == 0,
-            },      
-        })
-    }
-
-    private setPetUpdate(pet: PetState): Action {
-        return this.createAction(pet)
     }
 }

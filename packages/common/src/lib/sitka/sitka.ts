@@ -40,6 +40,10 @@ export abstract class SitkaModule<MODULE_STATE extends ModuleState, MODULES> {
             return Object.assign({ type }, v)
         }
     }
+
+    public setState(state: MODULE_STATE): Action {
+        return this.createAction(state)
+    }
 }
 
 interface SagaMeta {
