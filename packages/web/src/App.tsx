@@ -8,10 +8,6 @@ import {
 } from "@cashew/common/dist/core/modules/counter/redux"
 
 import {
-    ColorState,
-} from "@cashew/common/dist/core/modules/color/color"
-
-import {
     PetState,
     Vaccines,
 } from "@cashew/common/dist/core/modules/pets/pets"
@@ -27,7 +23,7 @@ import "./App.css"
 import logo from "./logo.svg"
 
 interface ReduxState {
-    readonly color: ColorState
+    readonly color: string
     readonly counter: number
     readonly modules: AppModules
     readonly pets: PetState
@@ -59,7 +55,6 @@ class App extends React.Component<ComponentProps> {
         const handleColor = () => this.props.handleColor("red")
         const handlePet = () => this.props.handlePet("marz")
         const handleUpdatePetEvil = () => this.props.handleUpdatePetEvil()
-
         return (
             <div className="App">
                 <header className="App-header">
@@ -68,7 +63,7 @@ class App extends React.Component<ComponentProps> {
                         Welcome to React
                     </h1>
                     <div>
-                        Color {color.color}
+                        Color {color}
                     </div>
                     <div>
                         Number {counter}

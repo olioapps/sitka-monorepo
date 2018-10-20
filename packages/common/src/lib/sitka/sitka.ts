@@ -15,7 +15,7 @@ import createSagaMiddleware from "redux-saga"
 
 import { all, apply, takeEvery } from "redux-saga/effects"
 
-export type SitkaModuleAction<T> = Partial<T> & { type: string }
+export type SitkaModuleAction<T> = Partial<T> & { type: string } | Action
 
 export abstract class SitkaModule<MODULE_STATE, MODULES> {
     public modules?: MODULES
@@ -30,7 +30,11 @@ export abstract class SitkaModule<MODULE_STATE, MODULES> {
     public abstract defaultState(): MODULE_STATE
 
     public createAction(v: Partial<MODULE_STATE>): SitkaModuleAction<MODULE_STATE> {
-        return Object.assign({ type: this.reduxKey() }, v)
+        if (typeof v !== "object") {
+            return { type: this.reduxKey(), [this.reduxKey()]: v }
+        } else {
+            return Object.assign({ type: this.reduxKey() }, v)
+        }
     }
 }
 
@@ -173,10 +177,15 @@ export class Sitka<MODULES = {}> {
                     const newState: MODULE_STATE = Object.keys(action)
                         .filter(k => k !== "type")
                         .reduce(
-                            (acc, k) =>
-                                Object.assign(acc, {
-                                    [k]: action[k],
-                                }),
+                            (acc, k) => {
+                                const val = action[k]
+                                if (typeof val !== "object") {
+                                    return val
+                                }
+                                return Object.assign(acc, {
+                                    [k]: val,
+                                })
+                            },
                             Object.assign({}, state),
                         ) as MODULE_STATE
 
