@@ -1,17 +1,11 @@
 import {
     Action,
-    combineReducers,
-    createStore,
     Dispatch,
     ReducersMapObject,
     Store,
 } from "redux"
 
-import { applyMiddleware } from "redux"
-
-import { createLogger } from "redux-logger"
-
-import createSagaMiddleware from "redux-saga"
+import { createAppStore } from "../redux/store_creator"
 
 import { all, apply, takeEvery } from "redux-saga/effects"
 
@@ -51,13 +45,14 @@ interface SagaMeta {
 }
 
 interface SitkaAction extends Action {
-    _instance: string
+    _moduleId: string
     // tslint:disable-next-line:no-any
     _args: any
 }
 
 // tslint:disable-next-line:max-classes-per-file
 export class SitkaMeta {
+    public readonly defaultState: {}
     public readonly sagaRoot: (() => IterableIterator<{}>)
     public readonly reducersToCombine: ReducersMapObject
 }
@@ -65,7 +60,6 @@ export class SitkaMeta {
 // tslint:disable-next-line:max-classes-per-file
 export class Sitka<MODULES = {}> {
     // tslint:disable-next-line:no-any
-    private sagaMiddleware: any
     private sagas: SagaMeta[] = []
     private reducersToCombine: ReducersMapObject = {}
     protected registeredModules: MODULES
@@ -88,128 +82,134 @@ export class Sitka<MODULES = {}> {
 
     public createSitkaMeta(): SitkaMeta {
         return {
-            reducersToCombine: this.reducersToCombine,
+            defaultState: {
+                ...this.getDefaultState(),
+                sitka: this,
+            },
+            reducersToCombine: {
+                ...this.reducersToCombine,
+                sitka: (state: this | null = null): this | null => state,
+            },
             sagaRoot: this.createRoot(),
         }
     }
 
     public createStore(): Store<{}> {
-        const logger = createLogger({
-            stateTransformer: (state: {}) => state,
-        })
-
-        this.sagaMiddleware = createSagaMiddleware()
-        const middleware = [this.sagaMiddleware, logger]
-
-        /*tslint:disable*/
-        const store: Store = createStore(
-            combineReducers({
-                ...this.reducersToCombine,
-            }),
-            applyMiddleware(...middleware),
+        const meta = this.createSitkaMeta()
+        const store = createAppStore(
+            meta.defaultState,
+            [],
+            [meta.reducersToCombine],
+            meta.sagaRoot,
         )
-        /*tslint:disable*/
 
         this.dispatch = store.dispatch
-        this.sagaMiddleware.run(this.createRoot())
 
         return store
     }
 
     public register<SITKA_MODULE extends SitkaModule<ModuleState, MODULES>>(
-        instance: SITKA_MODULE,
-    ): SITKA_MODULE {
-        const methodNames = Sitka.getInstanceMethodNames(
-            instance,
-            Object.prototype,
-        )
-        const setters = methodNames.filter(m => m.indexOf("set") === 0)
-        const handlers = methodNames.filter(m => m.indexOf("handle") === 0)
-        const { moduleName } = instance
-        const { sagas, reducersToCombine, doDispatch: dispatch } = this
-
-        instance.modules = this.getModules()
-
-        handlers.forEach(s => {
-            // tslint:disable:ban-types
-            const original: Function = instance[s] // tslint:disable:no-any
-
-            function patched(): void {
-                const args = arguments
-                const action: SitkaAction = {
-                    _args: args,
-                    _instance: moduleName,
-                    type: s,
-                }
-
-                dispatch(action)
-            }
-
-            sagas.push({
-                handler: original,
-                name: s,
-            })
-            // tslint:disable-next-line:no-any
-            instance[s] = patched
-        })
-
-        // create reducers for setters
-        setters.forEach(_ => {
-            const reduxKey: string = instance.reduxKey()
-            const defaultState = instance.defaultState
-
-            const makeReducer = (_reduxKey: string) => {
-                const prevReducer: (state: ModuleState, action: Action) => ModuleState =
-                    reducersToCombine[_reduxKey]
-
-                const reducer = (
-                    state: ModuleState = defaultState,
-                    action: Action,
-                ): ModuleState => {
-                    if (action.type !== _reduxKey) {
-                        return state
+        instances: SITKA_MODULE[],
+    ): void {
+        instances.forEach( instance => {
+            const methodNames = Sitka.getInstanceMethodNames(
+                instance,
+                Object.prototype,
+            )
+            const setters = methodNames.filter(m => m.indexOf("set") === 0)
+            const handlers = methodNames.filter(m => m.indexOf("handle") === 0)
+            const { moduleName } = instance
+            const { sagas, reducersToCombine, doDispatch: dispatch } = this
+    
+            instance.modules = this.getModules()
+    
+            handlers.forEach(s => {
+                // tslint:disable:ban-types
+                const original: Function = instance[s] // tslint:disable:no-any
+    
+                function patched(): void {
+                    const args = arguments
+                    const action: SitkaAction = {
+                        _args: args,
+                        _moduleId: moduleName,
+                        type: s,
                     }
-
-                    // there was a previous reducer
-                    // evaluate it
-                    const previousReducerExisted: boolean = !!prevReducer
-                    if (previousReducerExisted) {
-                        const result = prevReducer(state, action)
-                        if (result === defaultState) {
+    
+                    dispatch(action)
+                }
+    
+                sagas.push({
+                    handler: original,
+                    name: s,
+                })
+                // tslint:disable-next-line:no-any
+                instance[s] = patched
+            })
+    
+            // create reducers for setters
+            setters.forEach(_ => {
+                const reduxKey: string = instance.reduxKey()
+                const defaultState = instance.defaultState
+    
+                const makeReducer = (_reduxKey: string) => {
+                    const prevReducer: (state: ModuleState, action: Action) => ModuleState =
+                        reducersToCombine[_reduxKey]
+    
+                    const reducer = (
+                        state: ModuleState = defaultState,
+                        action: Action,
+                    ): ModuleState => {
+                        if (action.type !== _reduxKey) {
                             return state
                         }
+    
+                        // there was a previous reducer
+                        // evaluate it
+                        const previousReducerExisted: boolean = !!prevReducer
+                        if (previousReducerExisted) {
+                            const result = prevReducer(state, action)
+                            if (result === defaultState) {
+                                return state
+                            }
+                        }
+    
+                        const newState: ModuleState = Object.keys(action)
+                            .filter(k => k !== "type")
+                            .reduce(
+                                (acc, k) => {
+                                    const val = action[k]
+                                    if (val === null || typeof val === "undefined") {
+                                        return null
+                                    }
+                                    if (typeof val !== "object") {
+                                        return val
+                                    }
+                                    return Object.assign(acc, {
+                                        [k]: val,
+                                    })
+                                },
+                                Object.assign({}, state),
+                            ) as ModuleState
+    
+                        return newState
                     }
-
-                    const newState: ModuleState = Object.keys(action)
-                        .filter(k => k !== "type")
-                        .reduce(
-                            (acc, k) => {
-                                const val = action[k]
-                                if (!val) {
-                                    return null
-                                }
-                                if (typeof val !== "object") {
-                                    return val
-                                }
-                                return Object.assign(acc, {
-                                    [k]: val,
-                                })
-                            },
-                            Object.assign({}, state),
-                        ) as ModuleState
-
-                    return newState
+    
+                    return reducer
                 }
-
-                return reducer
-            }
-
-            reducersToCombine[reduxKey] = makeReducer(reduxKey)
+    
+                reducersToCombine[reduxKey] = makeReducer(reduxKey)
+            })
+    
+            this.registeredModules[moduleName] = instance
         })
+    }
 
-        this.registeredModules[moduleName] = instance
-
-        return instance
+    private getDefaultState(): {} {
+        return Object.values(this.getModules())
+        .reduce( 
+            (acc, m: SitkaModule<{} | null, MODULES>) => ({...acc, [m.moduleName]: m.defaultState}),
+            {},
+        )
     }
 
     private static hasMethod = (obj: {}, name: string) => {
@@ -228,14 +228,13 @@ export class Sitka<MODULES = {}> {
             for (let i = 0; i < sagas.length; i++) {
                 const s = sagas[i]
                 const generator = function*(action: any): {} {
-                    const instance: {} = registeredModules[action._instance]
+                    const instance: {} = registeredModules[action._moduleId]
                     yield apply(instance, s.handler, action._args)
                 }
                 const item: any = yield takeEvery(s.name, generator)
                 toYield.push(item)
             }
             /* tslint:enable */
-    
             yield all(toYield)
         }
 

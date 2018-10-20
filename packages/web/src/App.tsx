@@ -1,5 +1,4 @@
 import {
-    AppModules,
     AppState,
 } from "@cashew/common/dist/core/index"
 
@@ -29,7 +28,6 @@ import logo from "./logo.svg"
 interface ReduxState {
     readonly color: ColorState
     readonly counter: number
-    readonly modules: AppModules
     readonly pets: PetState
     readonly handleColor: (c: string) => void
     readonly handlePet: (p: string) => void
@@ -115,7 +113,6 @@ export default connect(
             handleColor: modules.color.handleColor,
             handlePet: modules.pets.handlePet,
             handleUpdatePetEvil: modules.pets.handleUpdatePetEvil,
-            modules: state.sitka.getModules(),
             pets: state.pets,
         }
     },

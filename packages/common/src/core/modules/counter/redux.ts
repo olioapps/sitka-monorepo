@@ -26,7 +26,7 @@ const defaultState = {
     counter: 0,
 }
 
-const counter = (
+const reducer = (
     state = defaultState.counter,
     action: IncrementAction | DecrementAction,
 ): number => {
@@ -44,4 +44,4 @@ const counter = (
 
 const actions = { increment, decrement, reset }
 
-export { actions, counter, defaultState }
+export { actions, reducer, defaultState }

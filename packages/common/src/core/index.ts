@@ -26,10 +26,7 @@ import {
     createAppStore,
 } from "../lib/redux/store_creator"
 
-import {
-    counter,
-    defaultState as counterDefaultState,
-} from "../core/modules/counter/redux"
+import * as Counter from "../core/modules/counter/redux"
 
 export interface AppModules {
     readonly color: ColorModule
@@ -50,42 +47,32 @@ export interface AppState {
 ////////////////////////////////////////////////////////////////////
 // setup sitka modules
 const sitka = new Sitka<AppModules>()
-const colorModule = new ColorModule()
-const petModule = new PetModule()
-sitka.register(colorModule)
-sitka.register(petModule)
+sitka.register(
+    [
+        new ColorModule(),
+        new PetModule(),
+    ]
+)
 
 const sitkaMeta = sitka.createSitkaMeta()
-const sitkaState = {
-    color: "red-changeme",
-    pets:  { ...petModule.defaultState },
-}
-
-const sitkaReducers = {
-    ...sitkaMeta.reducersToCombine,
-    sitka: (
-        state: { sitka: Sitka<AppModules> } = {sitka: new Sitka<AppModules>()},
-    ): { sitka: Sitka<AppModules> } => state,
-}
 
 ////////////////////////////////////////////////////////////////////
 // setup bespoke
 
 const bespokeState = {
-    ...counterDefaultState,
+    ...Counter.defaultState,
 }
+
 const bespokeReducers = [
     {
-        counter,
+        counter: Counter.reducer,
     },
 ]
 
-const defaultAppState: AppState = {
-    ...sitkaState,
+const defaultAppState: Partial<AppState> = {
+    ...sitkaMeta.defaultState,
     ...bespokeState,
-    sitka,
 }
-
 
 ////////////////////////////////////////////////////////////////////
 
@@ -108,7 +95,7 @@ export const createCoreAppStore = (
         [ 
             ...reducersToCombine || [], 
             ...bespokeReducers,
-            { ...sitkaReducers },
+            { ...sitkaMeta.reducersToCombine },
         ],
         root,
     )
@@ -116,4 +103,13 @@ export const createCoreAppStore = (
     sitka.setDispatch(store.dispatch)
 
     return store
+    // const sitka2 = new Sitka<AppModules>()
+    // sitka2.register(
+    //     [
+    //         new ColorModule(),
+    //         new PetModule(),
+    //     ]
+    // )
+
+    // return sitka2.createStore()
 }
