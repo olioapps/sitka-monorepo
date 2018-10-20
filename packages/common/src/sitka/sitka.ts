@@ -1,10 +1,10 @@
 import {
     Action,
-    AnyAction,
     combineReducers,
     createStore,
     ReducersMapObject,
     Store,
+    Dispatch,
 } from "redux"
 import { applyMiddleware } from "redux"
 import { createLogger } from "redux-logger"
@@ -54,12 +54,12 @@ export class SitkaMeta {
 
 // tslint:disable-next-line:max-classes-per-file
 export class Sitka<T = {}, A = {}> {
-    private store: Store<{}> | undefined
     // tslint:disable-next-line:no-any
     private sagaMiddleware: any
     private sagas: SagaMeta[] = []
     private reducersToCombine: ReducersMapObject = {}
     protected registeredModules: T
+    private dispatch?: Dispatch
 
     constructor() {
         this.doDispatch = this.doDispatch.bind(this)
@@ -68,16 +68,12 @@ export class Sitka<T = {}, A = {}> {
         this.registeredModules = {} as T
     }
 
-    public setStore(store: Store<{}>): void {
-        this.store = store
+    public setDispatch(dispatch: Dispatch): void {
+        this.dispatch = dispatch
     }
 
     public getModules(): T {
         return this.registeredModules
-    }
-
-    public getStore(): Store<{}, AnyAction> | undefined {
-        return this.store
     }
 
     public createSitkaMeta(): SitkaMeta {
@@ -94,14 +90,16 @@ export class Sitka<T = {}, A = {}> {
 
         this.sagaMiddleware = createSagaMiddleware()
         const middleware = [this.sagaMiddleware, logger]
-        this.store = createStore(
+        const store: Store = createStore(
             combineReducers(this.reducersToCombine),
             applyMiddleware(...middleware),
         )
 
+        this.dispatch = store.dispatch
+
         this.sagaMiddleware.run(this.root)
 
-        return this.store
+        return store
     }
 
     public register<F extends BaseMap, T extends ConnectedClass<F, this>>(
@@ -233,9 +231,9 @@ export class Sitka<T = {}, A = {}> {
     }
 
     private doDispatch(action: Action): void {
-        const store: Store<{}> | undefined = this.getStore()
-        if (!!store) {
-            store.dispatch(action)
+        const { dispatch } = this
+        if (!!dispatch) {
+            dispatch(action)
         }
     }
 }
