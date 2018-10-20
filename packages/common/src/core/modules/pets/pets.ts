@@ -9,6 +9,13 @@ import { SitkaModule } from "../../../lib/sitka/sitka"
 export interface PetState {
     readonly name: string
     readonly age: number
+    readonly vaccines: Vaccines
+}
+
+export interface Vaccines {
+    readonly rabies: boolean
+    readonly evil: boolean
+    readonly gas: boolean
 }
 
 export class PetModule extends SitkaModule<PetState, AppModules> {
@@ -17,6 +24,11 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
     public defaultState = (): PetState => ({
         name: "",
         age: 0,
+        vaccines: {
+            rabies: false,
+            evil: false,
+            gas: false,
+        },
     })
 
     public *handlePet(name: string): IterableIterator<{}> {
@@ -24,6 +36,14 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
     }
 
     private setPet(name: string): Action {
-        return this.createAction({name, age: new Date().getTime()})
+        return this.createAction({
+            name, 
+            age: new Date().getTime(),
+            vaccines: {
+                rabies: new Date().getTime() % 2 == 0,
+                evil: new Date().getTime() % 3 == 0,
+                gas: new Date().getTime() % 4 == 0,
+            },      
+        })
     }
 }

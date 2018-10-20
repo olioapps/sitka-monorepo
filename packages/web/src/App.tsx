@@ -17,6 +17,7 @@ import {
 
 import {
     PetState,
+    Vaccines,
 } from "@cashew/common/dist/core/modules/pets/pets"
 
 import * as React from "react"
@@ -67,7 +68,7 @@ class App extends React.Component<ComponentProps> {
                         Number {counter}
                     </div>
                     <div>
-                        Pet {pets.name} {pets.age}
+                        Pet {pets.name} {pets.age} {this.renderVaccines(pets.vaccines)}
                     </div>
                 </header>
                 <div className="wrap">
@@ -87,6 +88,12 @@ class App extends React.Component<ComponentProps> {
                     </div>
                 </div>
             </div>
+        )
+    }
+
+    private renderVaccines(vaccines: Vaccines): JSX.Element {
+        return (
+            <span>{JSON.stringify(vaccines)}</span>
         )
     }
 }
