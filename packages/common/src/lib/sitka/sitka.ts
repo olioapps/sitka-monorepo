@@ -13,6 +13,9 @@ export type SitkaModuleAction<T> = Partial<T> & { type: string } | Action
 
 type ModuleState = {} | undefined | null
 
+const createStateChangeKey = module => `module_${module}_change_state`.toUpperCase()
+const createHandlerKey = (module, handler) => `module_${module}_${handler}`.toUpperCase()
+
 export abstract class SitkaModule<MODULE_STATE extends ModuleState, MODULES> {
     public modules?: MODULES
 
@@ -26,14 +29,15 @@ export abstract class SitkaModule<MODULE_STATE extends ModuleState, MODULES> {
     public abstract defaultState: MODULE_STATE
 
     public createAction(v: Partial<MODULE_STATE>): SitkaModuleAction<MODULE_STATE> {
+        const type = createStateChangeKey(this.reduxKey())
         if (!v) {
-            return { type: this.reduxKey(), [this.reduxKey()]: null }
+            return { type, [this.reduxKey()]: null }
         }
 
         if (typeof v !== "object") {
-            return { type: this.reduxKey(), [this.reduxKey()]: v }
+            return { type, [this.reduxKey()]: v }
         } else {
-            return Object.assign({ type: this.reduxKey() }, v)
+            return Object.assign({ type }, v)
         }
     }
 }
@@ -132,7 +136,7 @@ export class Sitka<MODULES = {}> {
                     const action: SitkaAction = {
                         _args: args,
                         _moduleId: moduleName,
-                        type: s,
+                        type: createHandlerKey(moduleName, s),
                     }
     
                     dispatch(action)
@@ -140,7 +144,7 @@ export class Sitka<MODULES = {}> {
     
                 sagas.push({
                     handler: original,
-                    name: s,
+                    name: createHandlerKey(moduleName, s),
                 })
                 // tslint:disable-next-line:no-any
                 instance[s] = patched
@@ -149,6 +153,7 @@ export class Sitka<MODULES = {}> {
             // create reducers for setters
             setters.forEach(_ => {
                 const reduxKey: string = instance.reduxKey()
+                const actionType: string = createStateChangeKey(reduxKey)
                 const defaultState = instance.defaultState
     
                 const makeReducer = (_reduxKey: string) => {
@@ -159,7 +164,7 @@ export class Sitka<MODULES = {}> {
                         state: ModuleState = defaultState,
                         action: Action,
                     ): ModuleState => {
-                        if (action.type !== _reduxKey) {
+                        if (action.type !== actionType) {
                             return state
                         }
     
