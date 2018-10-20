@@ -32,6 +32,7 @@ interface ReduxState {
 }
 
 interface ReduxActions {
+    readonly decrement: () => void
     readonly increment: () => void
 }
 
@@ -42,7 +43,7 @@ class App extends React.Component<ComponentProps> {
     }
 
     public render(): JSX.Element {
-        const { color, counter, sitka, increment } = this.props
+        const { color, counter, sitka, increment, decrement } = this.props
         const modules: AppModules = sitka.getModules()
         const handleColor = () => modules.color.handleColor("red")
 
@@ -66,7 +67,10 @@ class App extends React.Component<ComponentProps> {
                             Update color
                         </button>
                         <button id="increment" onClick={ increment }>
-                            Update number
+                            Increment number
+                        </button>
+                        <button id="decrement" onClick={ decrement }>
+                            Decrement number
                         </button>
                     </div>
                 </div>
@@ -84,6 +88,7 @@ export default connect(
         }
     },
     (dispatch: Dispatch<Action>): ReduxActions => ({
+        decrement: () => dispatch(actions.decrement()),
         increment: () => dispatch(actions.increment()),
     }),
 )(App)
