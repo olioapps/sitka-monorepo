@@ -1,14 +1,14 @@
 import { call, put, select } from "redux-saga/effects"
-import { BaseMap, ConnectedClass, ConnectedClassAction, Sitka, SitkaMeta } from "./sitka"
+import { SitkaModule, Sitka, SitkaMeta, SitkaModuleAction } from "./sitka"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-interface TestState extends BaseMap {
+interface TestState {
     readonly count: number
     readonly food: string
 }
 
-class Test extends ConnectedClass<TestState, Sitka<SitkaModules, AppState>> {
+class Test extends SitkaModule<TestState, Sitka<SitkaModules>> {
 
     public moduleName = (): string => "test"
 
@@ -33,19 +33,13 @@ class Test extends ConnectedClass<TestState, Sitka<SitkaModules, AppState>> {
     }
 
     // reducer-facing actions should be private
-    private setCount(a: number, b: number): ConnectedClassAction<TestState> {
+    private setCount(a: number, b: number): SitkaModuleAction<TestState> {
         return this.createAction({
             count: a + b,
         })
     }
 
-    // private setBigCount(): ConnectedClassAction<TestState> {
-    //     return this.createAction({
-    //         count: 1000,
-    //     })
-    // }
-
-    private setFood(food: string): ConnectedClassAction<TestState> {
+    private setFood(food: string): SitkaModuleAction<TestState> {
         return this.createAction({
             food,
         })
@@ -59,12 +53,12 @@ class Test extends ConnectedClass<TestState, Sitka<SitkaModules, AppState>> {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export interface Test2State extends BaseMap {
+export interface Test2State {
     readonly pet: string
 }
 
 // tslint:disable-next-line:max-classes-per-file
-class Test2 extends ConnectedClass<Test2State, Sitka<SitkaModules, AppState>> {
+class Test2 extends SitkaModule<Test2State, Sitka<SitkaModules>> {
 
     public moduleName = (): string => "test2"
 
@@ -83,19 +77,19 @@ class Test2 extends ConnectedClass<Test2State, Sitka<SitkaModules, AppState>> {
         }
     }
 
-    private setPet(pet: string): ConnectedClassAction<Test2State> {
+    private setPet(pet: string): SitkaModuleAction<Test2State> {
         return this.createAction({pet})
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export interface Test3State extends BaseMap {
+export interface Test3State {
     readonly day: string
 }
 
 // tslint:disable-next-line:max-classes-per-file
-class Test3 extends ConnectedClass<Test3State, Sitka<SitkaModules, AppState>> {
+class Test3 extends SitkaModule<Test3State, Sitka<SitkaModules>> {
 
     public moduleName = (): string => "test3"
 
@@ -103,7 +97,7 @@ class Test3 extends ConnectedClass<Test3State, Sitka<SitkaModules, AppState>> {
         day: "",
     })
 
-    public setDayClear(): ConnectedClassAction<Test3State> {
+    public setDayClear(): SitkaModuleAction<Test3State> {
         return this.createAction({day: this.defaultState().day})
     }
 
@@ -111,7 +105,7 @@ class Test3 extends ConnectedClass<Test3State, Sitka<SitkaModules, AppState>> {
         yield put(this.setDay(day))
     }
 
-    private setDay(day: string): ConnectedClassAction<Test3State> {
+    private setDay(day: string): SitkaModuleAction<Test3State> {
         return this.createAction({day})
     }
 }
@@ -142,7 +136,7 @@ export interface AppState {
     readonly other: OtherState
 }
 
-const sitka = new Sitka<SitkaModules, AppState>()
+const sitka = new Sitka<SitkaModules>()
 
 sitka.register(new Test())
 sitka.register(new Test2())

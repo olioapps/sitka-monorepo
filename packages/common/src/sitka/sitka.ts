@@ -11,13 +11,9 @@ import { createLogger } from "redux-logger"
 import createSagaMiddleware from "redux-saga"
 import { all, apply, takeEvery } from "redux-saga/effects"
 
-export interface BaseMap<T = {}> {
-    [key: string]: T
-}
+export type SitkaModuleAction<T> = Partial<T> & { type: string }
 
-export type ConnectedClassAction<T> = Partial<T> & { type: string }
-
-export abstract class ConnectedClass<T extends BaseMap, X extends Sitka> {
+export abstract class SitkaModule<T, X extends Sitka> {
     public sitka: X | undefined
 
     public abstract moduleName(): string
@@ -29,7 +25,7 @@ export abstract class ConnectedClass<T extends BaseMap, X extends Sitka> {
 
     public abstract defaultState(): T
 
-    public createAction(v: Partial<T>): ConnectedClassAction<T> {
+    public createAction(v: Partial<T>): SitkaModuleAction<T> {
         return Object.assign({ type: this.reduxKey() }, v)
     }
 }
@@ -53,7 +49,7 @@ export class SitkaMeta {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-export class Sitka<T = {}, A = {}> {
+export class Sitka<T = {}> {
     // tslint:disable-next-line:no-any
     private sagaMiddleware: any
     private sagas: SagaMeta[] = []
@@ -85,7 +81,7 @@ export class Sitka<T = {}, A = {}> {
 
     public createStore(): Store<{}> {
         const logger = createLogger({
-            stateTransformer: (state: A) => state,
+            stateTransformer: (state: {}) => state,
         })
 
         this.sagaMiddleware = createSagaMiddleware()
@@ -102,7 +98,7 @@ export class Sitka<T = {}, A = {}> {
         return store
     }
 
-    public register<F extends BaseMap, T extends ConnectedClass<F, this>>(
+    public register<F, T extends SitkaModule<F, this>>(
         instance: T,
     ): T {
         const methodNames = Sitka.getInstanceMethodNames(
