@@ -41,7 +41,7 @@ class App extends React.Component<ComponentProps> {
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo" />
                     <h1 className="App-title">
-                        Welcome to React Counter { testState && testState.count }
+                        Welcome to React Counter {testState && testState.count}
                     </h1>
                 </header>
                 <div className="wrap">
@@ -50,14 +50,10 @@ class App extends React.Component<ComponentProps> {
                         <button id="increment" onClick={test.handleIncrementCount}>
                             +
                         </button>
-                        {/* <button onClick={this.props.incrementRedux()} id="decrement"> */}
-                        <button  id="decrement">
-                            -
-                        </button>
+                        {/* <button onClick={this.decrementCounter} id="decrement"> */}
+                        {/* <button id="decrement">-</button> */}
                         {/* <button onClick={this.resetCounter} id="reset"> */}
-                        <button  id="reset">
-                            Reset
-                        </button>
+                        {/* <button id="reset">Reset</button> */}
                     </div>
                 </div>
             </div>

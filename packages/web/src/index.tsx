@@ -1,9 +1,4 @@
-import {
-    modules,
-    Sitka,
-    sitka,
-    SitkaModules,
-} from "@cashew/common"
+import { modules, Sitka, sitka, SitkaModules } from "@cashew/common"
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 import { Provider } from "react-redux"
@@ -18,7 +13,7 @@ export const sitkaModules = modules
 
 ReactDOM.render(
     <Provider store={store}>
-        <App sitka={sitka} modules={modules}/>
+        <App sitka={sitka} modules={modules} />
     </Provider>,
     document.getElementById("root") as HTMLElement,
 )
