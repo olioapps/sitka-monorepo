@@ -8,6 +8,10 @@ import {
 } from "@cashew/common/dist/core/index"
 
 import {
+    actions,
+} from "@cashew/common/dist/core/modules/counter/redux"
+
+import {
     ColorState,
 } from "@cashew/common/dist/core/modules/color/color"
 
@@ -15,23 +19,30 @@ import * as React from "react"
 
 import { connect } from "react-redux"
 
+import { Action, Dispatch } from "redux"
+
 import "./App.css"
 
 import logo from "./logo.svg"
 
 interface ReduxState {
     readonly color: ColorState
+    readonly counter: number,
     readonly sitka: Sitka<AppModules>
 }
 
-type ComponentProps = ReduxState
+interface ReduxActions {
+    readonly increment: () => void
+}
+
+type ComponentProps = ReduxState & ReduxActions
 class App extends React.Component<ComponentProps> {
     constructor(props: ComponentProps) {
         super(props)
     }
 
     public render(): JSX.Element {
-        const { color, sitka } = this.props
+        const { color, counter, sitka, increment } = this.props
         const modules: AppModules = sitka.getModules()
         const handleColor = () => modules.color.handleColor("red")
 
@@ -45,11 +56,17 @@ class App extends React.Component<ComponentProps> {
                     <div>
                         Color {color.color}
                     </div>
+                    <div>
+                        Number {counter}
+                    </div>
                 </header>
                 <div className="wrap">
                     <div className="wrap-btns">
                         <button id="increment" onClick={ handleColor }>
                             Update color
+                        </button>
+                        <button id="increment" onClick={ increment }>
+                            Update number
                         </button>
                     </div>
                 </div>
@@ -58,13 +75,15 @@ class App extends React.Component<ComponentProps> {
     }
 }
 
-// type ConectState = AppState & SitkaModules
 export default connect(
     (state: AppState): ReduxState => {
         return {
             color: state.color,
+            counter: state.counter,
             sitka: state.sitka,
         }
     },
-    null,
+    (dispatch: Dispatch<Action>): ReduxActions => ({
+        increment: () => dispatch(actions.increment()),
+    }),
 )(App)
