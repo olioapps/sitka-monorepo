@@ -106,7 +106,7 @@ class App extends React.Component<ComponentProps> {
 
 export default connect(
     (state: AppState): ReduxState => {
-        const modules = state.sitka.getModules()
+        const modules = state.__sitka__.getModules()
         return {
             color: state.color,
             counter: state.counter,

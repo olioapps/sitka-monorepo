@@ -37,7 +37,7 @@ export interface AppState {
     readonly color: ColorState
     readonly pets: PetState
     readonly counter: number
-    readonly sitka: Sitka<AppModules>
+    readonly __sitka__: Sitka<AppModules>
 }
 
 //

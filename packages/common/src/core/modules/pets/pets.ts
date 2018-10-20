@@ -47,7 +47,7 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
             },
         }
 
-        yield put(this.updatePet(updatedPet))
+        yield put(this.setPetUpdate(updatedPet))
     }
 
     private getPet(state: AppState): PetState {
@@ -55,6 +55,7 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
     }
 
     private setPet(name: string): Action {
+        debugger
         return this.createAction({
             name, 
             age: new Date().getTime(),
@@ -66,7 +67,7 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
         })
     }
 
-    private updatePet(pet: PetState): Action {
+    private setPetUpdate(pet: PetState): Action {
         return this.createAction(pet)
     }
 }

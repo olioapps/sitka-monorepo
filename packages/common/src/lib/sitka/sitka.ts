@@ -17,7 +17,7 @@ const createStateChangeKey = module => `module_${module}_change_state`.toUpperCa
 const createHandlerKey = (module, handler) => `module_${module}_${handler}`.toUpperCase()
 
 export abstract class SitkaModule<MODULE_STATE extends ModuleState, MODULES> {
-    public modules?: MODULES
+    public modules: MODULES
 
     public abstract moduleName: string
 
@@ -31,11 +31,11 @@ export abstract class SitkaModule<MODULE_STATE extends ModuleState, MODULES> {
     public createAction(v: Partial<MODULE_STATE>): SitkaModuleAction<MODULE_STATE> {
         const type = createStateChangeKey(this.reduxKey())
         if (!v) {
-            return { type, [this.reduxKey()]: null }
+            return { type, [type]: null }
         }
 
         if (typeof v !== "object") {
-            return { type, [this.reduxKey()]: v }
+            return { type, [type]: v }
         } else {
             return Object.assign({ type }, v)
         }
@@ -88,11 +88,11 @@ export class Sitka<MODULES = {}> {
         return {
             defaultState: {
                 ...this.getDefaultState(),
-                sitka: this,
+                __sitka__: this,
             },
             reducersToCombine: {
                 ...this.reducersToCombine,
-                sitka: (state: this | null = null): this | null => state,
+                __sitka__: (state: this | null = null): this | null => state,
             },
             sagaRoot: this.createRoot(),
         }
@@ -178,17 +178,23 @@ export class Sitka<MODULES = {}> {
                             }
                         }
     
+                        debugger
+                        const type = createStateChangeKey(moduleName)
                         const newState: ModuleState = Object.keys(action)
                             .filter(k => k !== "type")
                             .reduce(
                                 (acc, k) => {
                                     const val = action[k]
-                                    if (val === null || typeof val === "undefined") {
-                                        return null
-                                    }
-                                    if (typeof val !== "object") {
+                                    if (k === type) {
                                         return val
                                     }
+                                    
+                                    if (val === null || typeof val === "undefined") {
+                                        return Object.assign(acc, {
+                                            [k]: null,
+                                        })
+                                    }
+
                                     return Object.assign(acc, {
                                         [k]: val,
                                     })
