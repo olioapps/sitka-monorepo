@@ -58,8 +58,9 @@ sitka.register(petModule)
 const sitkaMeta = sitka.createSitkaMeta()
 const sitkaState = {
     color: "red-changeme",
-    pets:  { ...petModule.defaultState() },
+    pets:  { ...petModule.defaultState },
 }
+
 const sitkaReducers = {
     ...sitkaMeta.reducersToCombine,
     sitka: (

@@ -22,14 +22,14 @@ type ModuleState = {} | undefined | null
 export abstract class SitkaModule<MODULE_STATE extends ModuleState, MODULES> {
     public modules?: MODULES
 
-    public abstract moduleName(): string
+    public abstract moduleName: string
 
     // by default, the redux key is same as the moduleName
     public reduxKey(): string {
-        return this.moduleName()
+        return this.moduleName
     }
 
-    public abstract defaultState(): MODULE_STATE
+    public abstract defaultState: MODULE_STATE
 
     public createAction(v: Partial<MODULE_STATE>): SitkaModuleAction<MODULE_STATE> {
         if (!v) {
@@ -125,7 +125,7 @@ export class Sitka<MODULES = {}> {
         )
         const setters = methodNames.filter(m => m.indexOf("set") === 0)
         const handlers = methodNames.filter(m => m.indexOf("handle") === 0)
-        const moduleName = instance.moduleName()
+        const { moduleName } = instance
         const { sagas, reducersToCombine, doDispatch: dispatch } = this
 
         instance.modules = this.getModules()
@@ -156,7 +156,7 @@ export class Sitka<MODULES = {}> {
         // create reducers for setters
         setters.forEach(_ => {
             const reduxKey: string = instance.reduxKey()
-            const defaultState = instance.defaultState()
+            const defaultState = instance.defaultState
 
             const makeReducer = (_reduxKey: string) => {
                 const prevReducer: (state: ModuleState, action: Action) => ModuleState =

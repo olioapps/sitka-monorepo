@@ -6,11 +6,10 @@ import { SitkaModule } from "../../../lib/sitka/sitka"
 export type ColorState = string | null
 
 export class ColorModule extends SitkaModule<ColorState, AppModules> {
-    public moduleName = (): string => "color"
-    
-    public defaultState = (): ColorState => null
+    public moduleName: string = "color"
+    public defaultState: ColorState = null
 
-    public *handleColor(color: string): IterableIterator<{}> {
+    public *handleColor(color: string): {} {
         yield put(this.setColor(`${color}-${new Date().getTime()}`))
     }
 

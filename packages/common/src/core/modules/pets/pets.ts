@@ -19,9 +19,9 @@ export interface Vaccines {
 }
 
 export class PetModule extends SitkaModule<PetState, AppModules> {
-    public moduleName = (): string => "pets"
+    public moduleName: string = "pets"
     
-    public defaultState = (): PetState => ({
+    public defaultState: PetState = {
         name: "",
         age: 0,
         vaccines: {
@@ -29,13 +29,13 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
             evil: false,
             gas: false,
         },
-    })
+    }
 
-    public *handlePet(name: string): IterableIterator<{}> {
+    public *handlePet(name: string): {} {
         yield put(this.setPet(`${name}-${new Date().getTime()}`))
     }
 
-    public *handleUpdatePetEvil(): IterableIterator<{}> {
+    public *handleUpdatePetEvil(): {} {
         const currentPet: PetState = yield select(this.getPet)
 
         // this will normally be in a util
