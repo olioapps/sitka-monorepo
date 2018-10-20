@@ -1,9 +1,4 @@
-import {
-    Sitka,
-    SitkaModules,
-    // sitkaModules as modules,
-    TestState,
-} from "@cashew/common"
+import { modules, Sitka, SitkaModules, TestState } from "@cashew/common"
 
 import { store } from "./index"
 
@@ -11,7 +6,6 @@ import * as React from "react"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
 import "./App.css"
-import {  } from "./index"
 import logo from "./logo.svg"
 
 interface AppProps {
@@ -23,7 +17,6 @@ interface AppProps {
 class App extends React.Component<AppProps> {
     constructor(props: AppProps) {
         super(props)
-
     }
 
     public render(): JSX.Element {
@@ -38,7 +31,7 @@ class App extends React.Component<AppProps> {
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo" />
                     <h1 className="App-title">
-                        Welcome to React Counter { testState && testState.count }
+                        Welcome to React Counter {testState && testState.count}
                     </h1>
                 </header>
                 <div className="wrap">
@@ -48,13 +41,9 @@ class App extends React.Component<AppProps> {
                             +
                         </button>
                         {/* <button onClick={this.decrementCounter} id="decrement"> */}
-                        <button  id="decrement">
-                            -
-                        </button>
+                        {/* <button id="decrement">-</button> */}
                         {/* <button onClick={this.resetCounter} id="reset"> */}
-                        <button  id="reset">
-                            Reset
-                        </button>
+                        {/* <button id="reset">Reset</button> */}
                     </div>
                 </div>
             </div>
@@ -64,5 +53,7 @@ class App extends React.Component<AppProps> {
 
 export default connect(
     () => store.getState(),
-    dispatch => ({ actions: bindActionCreators(modules.test.handleIncrementCount, dispatch) }),
+    dispatch => ({
+        actions: bindActionCreators(modules.test.handleIncrementCount, dispatch),
+    }),
 )(App)
