@@ -1,29 +1,32 @@
 import {
+    AppState,
+    modules,
+    // sitkaModules as modules,
     Sitka,
     SitkaModules,
-    // sitkaModules as modules,
     TestState,
 } from "@cashew/common"
-
-import { store } from "./index"
 
 import * as React from "react"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
 import "./App.css"
-import {  } from "./index"
+// import {  } from "./index"
 import logo from "./logo.svg"
 
 interface AppProps {
     readonly sitka: Sitka
     readonly modules: SitkaModules
-    readonly test?: TestState
 }
 
-class App extends React.Component<AppProps> {
-    constructor(props: AppProps) {
-        super(props)
+interface ReduxState {
+    readonly test: TestState
+}
 
+type ComponentProps = AppProps & ReduxState
+class App extends React.Component<ComponentProps> {
+    constructor(props: ComponentProps) {
+        super(props)
     }
 
     public render(): JSX.Element {
@@ -47,7 +50,7 @@ class App extends React.Component<AppProps> {
                         <button id="increment" onClick={test.handleIncrementCount}>
                             +
                         </button>
-                        {/* <button onClick={this.decrementCounter} id="decrement"> */}
+                        {/* <button onClick={this.props.incrementRedux()} id="decrement"> */}
                         <button  id="decrement">
                             -
                         </button>
@@ -62,7 +65,12 @@ class App extends React.Component<AppProps> {
     }
 }
 
+// type ConectState = AppState & SitkaModules
 export default connect(
-    () => store.getState(),
+    (state: AppState): ReduxState => {
+        return {
+            test: state.test,
+        }
+    },
     dispatch => ({ actions: bindActionCreators(modules.test.handleIncrementCount, dispatch) }),
 )(App)

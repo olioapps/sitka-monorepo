@@ -48,8 +48,8 @@ interface SitkaAction extends Action {
 
 // tslint:disable-next-line:max-classes-per-file
 export class SitkaMeta {
-    public readonly sagaRoot: (() => IterableIterator<{}>) | undefined
-    public readonly reducersToCombine: ReducersMapObject | undefined
+    public readonly sagaRoot: (() => IterableIterator<{}>)
+    public readonly reducersToCombine: ReducersMapObject
 }
 
 // tslint:disable-next-line:max-classes-per-file
