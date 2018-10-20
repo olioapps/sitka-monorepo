@@ -54,6 +54,13 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
         }
 
         yield put(this.setState(updatedPet))
+
+        // this will actually dispatch and invoke the handler
+        this.handleAlert()
+    }
+
+    private *handleAlert(): {} {
+        alert("my pet is evil!")
     }
 
     private getPet(state: AppState): PetState {
