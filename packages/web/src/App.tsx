@@ -53,6 +53,7 @@ class App extends React.Component<ComponentProps> {
         const modules: AppModules = sitka.getModules()
         const handleColor = () => modules.color.handleColor("red")
         const handlePet = () => modules.pets.handlePet("marz")
+        const handleEvil = () => modules.pets.handleUpdatePetEvil()
 
         return (
             <div className="App">
@@ -84,6 +85,9 @@ class App extends React.Component<ComponentProps> {
                         </button>
                         <button id="pet" onClick={ handlePet }>
                             Update pet
+                        </button>
+                        <button id="evil" onClick={ handleEvil }>
+                            Make pet evil
                         </button>
                     </div>
                 </div>

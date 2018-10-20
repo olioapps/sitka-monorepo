@@ -1,8 +1,8 @@
-import { AppModules } from "../../index"
+import { AppModules, AppState } from "../../index"
 
 import { Action } from "redux"
 
-import { put } from "redux-saga/effects"
+import { put, select } from "redux-saga/effects"
 
 import { SitkaModule } from "../../../lib/sitka/sitka"
 
@@ -35,6 +35,25 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
         yield put(this.setPet(`${name}-${new Date().getTime()}`))
     }
 
+    public *handleUpdatePetEvil(): IterableIterator<{}> {
+        const currentPet: PetState = yield select(this.getPet)
+
+        // this will normally be in a util
+        const updatedPet = {
+            ...currentPet, 
+            vaccines: {
+                ...currentPet.vaccines,
+                evil: true,
+            },
+        }
+
+        yield put(this.updatePet(updatedPet))
+    }
+
+    private getPet(state: AppState): PetState {
+        return state.pets
+    }
+
     private setPet(name: string): Action {
         return this.createAction({
             name, 
@@ -45,5 +64,9 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
                 gas: new Date().getTime() % 4 == 0,
             },      
         })
+    }
+
+    private updatePet(pet: PetState): Action {
+        return this.createAction(pet)
     }
 }
