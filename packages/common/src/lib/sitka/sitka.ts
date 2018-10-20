@@ -44,12 +44,21 @@ export abstract class SitkaModule<MODULE_STATE extends ModuleState, MODULES> {
     public setState(state: MODULE_STATE): Action {
         return this.createAction(state)
     }
+
+    public createSubscription(actionType: string, handler: Function): SagaMeta {
+        return {
+            name: actionType,
+            handler,
+            direct: true,
+        }
+    }
 }
 
 interface SagaMeta {
     // tslint:disable-next-line:no-any
     readonly handler: any
     readonly name: string
+    readonly direct?: boolean
 }
 
 interface SitkaAction extends Action {
@@ -69,6 +78,7 @@ export class SitkaMeta {
 export class Sitka<MODULES = {}> {
     // tslint:disable-next-line:no-any
     private sagas: SagaMeta[] = []
+    // tslint:disable-next-line:no-any
     private reducersToCombine: ReducersMapObject = {}
     protected registeredModules: MODULES
     private dispatch?: Dispatch
@@ -126,10 +136,20 @@ export class Sitka<MODULES = {}> {
             )
             const setters = methodNames.filter(m => m.indexOf("set") === 0)
             const handlers = methodNames.filter(m => m.indexOf("handle") === 0)
+            const subscribers = methodNames.filter(m => m.indexOf("subscribe") === 0)
+
             const { moduleName } = instance
             const { sagas, reducersToCombine, doDispatch: dispatch } = this
     
             instance.modules = this.getModules()
+
+            subscribers.forEach( s => {
+                // tslint:disable:ban-types
+                const original: Function = instance[s] // tslint:disable:no-any
+                const sagaMeta = original.call(instance)
+                console.log("-->", sagaMeta)
+                sagas.push(sagaMeta)
+            })
     
             handlers.forEach(s => {
                 // tslint:disable:ban-types
@@ -182,7 +202,6 @@ export class Sitka<MODULES = {}> {
                             }
                         }
     
-                        debugger
                         const type = createStateChangeKey(moduleName)
                         const newState: ModuleState = Object.keys(action)
                             .filter(k => k !== "type")
@@ -236,18 +255,22 @@ export class Sitka<MODULES = {}> {
         const { sagas, registeredModules } = this
 
         function* root(): IterableIterator<{}> {
-
             /* tslint:disable */
             const toYield: any[] = []
     
             for (let i = 0; i < sagas.length; i++) {
-                const s = sagas[i]
-                const generator = function*(action: any): {} {
-                    const instance: {} = registeredModules[action._moduleId]
-                    yield apply(instance, s.handler, action._args)
+                const s: SagaMeta = sagas[i]
+                if (s.direct) {
+                    const item: any = yield takeEvery(s.name, s.handler)
+                    toYield.push(item)
+                } else {
+                    const generator = function*(action: any): {} {
+                        const instance: {} = registeredModules[action._moduleId]
+                        yield apply(instance, s.handler, action._args)
+                    }
+                    const item: any = yield takeEvery(s.name, generator)
+                    toYield.push(item)
                 }
-                const item: any = yield takeEvery(s.name, generator)
-                toYield.push(item)
             }
             /* tslint:enable */
             yield all(toYield)

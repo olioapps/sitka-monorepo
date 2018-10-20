@@ -3,6 +3,7 @@ import { AppModules, AppState } from "../../index"
 import { put, select } from "redux-saga/effects"
 
 import { SitkaModule } from "../../../lib/sitka/sitka"
+import { IncrementAction } from "../counter/redux";
 
 export interface PetState {
     readonly name: string
@@ -57,6 +58,21 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
 
         // this will actually dispatch and invoke the handler
         this.handleAlert()
+    }
+
+    // tslint:disable-next-line:no-unused-variable
+    private subscribeToSelfPetChange() {
+        return this.createSubscription("MODULE_PETS_CHANGE_STATE", function*(action: {}) {
+            console.log("heard MODULE_PETS_CHANGE_STATE!")
+            console.log("-->", action)
+        })
+    }
+
+    // tslint:disable-next-line:no-unused-variable
+    private subscribeToIncrement() {
+        return this.createSubscription("INCREMENT", function*(action: IncrementAction) {
+            console.log("-->", action)
+        })
     }
 
     private *handleAlert(): {} {
