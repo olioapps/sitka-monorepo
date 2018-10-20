@@ -95,18 +95,6 @@ export class Sitka<MODULES = {}> {
         const store: Store = createStore(
             combineReducers({
                 ...this.reducersToCombine,
-                sitka: (
-                    state: { sitka: Sitka<MODULES> } = {sitka: new Sitka<MODULES>()},
-                    action: Action & {
-                        sitka,
-                    },
-                ): { sitka: Sitka<MODULES> } => {
-                    if (action.type !== "SITKA") {
-                        return state
-                    }
-    
-                    return {...state, sitka: action.sitka}
-                }
             }),
             applyMiddleware(...middleware),
         )

@@ -50,6 +50,12 @@ const sitkaMeta = sitka.createSitkaMeta()
 const sitkaState = {
     color: { ...colorModule.defaultState() },
 }
+const sitkaReducers = {
+    ...sitkaMeta.reducersToCombine,
+    sitka: (
+        state: { sitka: Sitka<AppModules> } = {sitka: new Sitka<AppModules>()},
+    ): { sitka: Sitka<AppModules> } => state,
+}
 
 ////////////////////////////////////////////////////////////////////
 // setup bespoke
@@ -68,6 +74,7 @@ const defaultAppState: AppState = {
     ...bespokeState,
     sitka,
 }
+
 
 ////////////////////////////////////////////////////////////////////
 
@@ -90,7 +97,7 @@ export const createCoreAppStore = (
         [ 
             ...reducersToCombine || [], 
             ...bespokeReducers,
-            sitkaMeta.reducersToCombine,
+            { ...sitkaReducers },
         ],
         root,
     )
