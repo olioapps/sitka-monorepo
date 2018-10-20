@@ -75,7 +75,6 @@ const defaultAppState: Partial<AppState> = {
 }
 
 ////////////////////////////////////////////////////////////////////
-
 export const createCoreAppStore = (
     middleware?: Middleware[],
     reducersToCombine?: ReducersMapObject[],
@@ -91,7 +90,7 @@ export const createCoreAppStore = (
 
     const store = createAppStore(
         defaultAppState,
-        [ ...middleware || [] ],
+        [ ...(middleware || []), ...sitkaMeta.middleware ],
         [ 
             ...reducersToCombine || [], 
             ...bespokeReducers,

@@ -3,7 +3,9 @@ import { AppModules, AppState } from "../../index"
 import { put, select } from "redux-saga/effects"
 
 import { SitkaModule } from "../../../lib/sitka/sitka"
-import { IncrementAction } from "../counter/redux";
+import { IncrementAction } from "../counter/redux"
+
+import { Store, Action } from "redux"
 
 export interface PetState {
     readonly name: string
@@ -73,6 +75,20 @@ export class PetModule extends SitkaModule<PetState, AppModules> {
             this.createSubscription("INCREMENT", function*(action: IncrementAction) {
                 console.log(moduleName, "subscription heard -->", action)
             }),
+        ]
+    }
+
+    // tslint:disable-next-line:no-unused-variable
+    private middlewareProvider() {
+        const { moduleName } = this
+
+        // these don't have to be inline here, they are for convenience
+        return [
+            (store: Store<AppState>) => (next: Function) => (action: Action) => {
+                console.log(moduleName, "middleware heard -->", action)
+                console.log(moduleName, "current state:", store.getState().pets)
+                return next(action)
+            },
         ]
     }
 
