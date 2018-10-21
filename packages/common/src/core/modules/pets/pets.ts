@@ -2,7 +2,7 @@ import { AppModules, AppState } from "../../index"
 
 import { put, select } from "redux-saga/effects"
 
-import { SitkaModule } from "../../../lib/sitka/sitka"
+import { SitkaModule } from "olio-sitka"
 import { IncrementAction } from "../counter/redux"
 
 import { Dispatch, Action, Middleware, MiddlewareAPI } from "redux"

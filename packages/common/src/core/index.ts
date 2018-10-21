@@ -10,7 +10,7 @@ import {
 
 import { 
     Sitka, 
-} from "../lib/sitka/sitka"
+} from "olio-sitka"
 
 import { 
     Middleware,
