@@ -9,6 +9,7 @@ import {
 } from "./modules/pets/pets"
 
 import { 
+    createAppStore,
     Sitka, 
 } from "olio-sitka"
 
@@ -21,10 +22,6 @@ import {
 import {
     call,
 } from "redux-saga/effects"
-
-import {
-    createAppStore,
-} from "../lib/redux/store_creator"
 
 import * as Counter from "../core/modules/counter/redux"
 
@@ -90,12 +87,12 @@ export const createCoreAppStore = (
 
     const store = createAppStore(
         defaultAppState,
-        [ ...(middleware || []), ...sitkaMeta.middleware ],
         [ 
             ...reducersToCombine || [], 
             ...bespokeReducers,
             { ...sitkaMeta.reducersToCombine },
         ],
+        [ ...(middleware || []), ...sitkaMeta.middleware ],
         root,
     )
 

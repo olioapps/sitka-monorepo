@@ -1,6 +1,6 @@
 import { AppModules } from "../../index"
-import { put } from "redux-saga/effects"
 import { SitkaModule } from "olio-sitka"
+import { put } from "redux-saga/effects"
 
 export type ColorState = string | null
 
