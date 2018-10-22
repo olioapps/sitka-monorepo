@@ -6372,9 +6372,9 @@ obuf@^1.0.0, obuf@^1.1.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/obuf/-/obuf-1.1.2.tgz#09bea3343d41859ebd446292d11c9d4db619084e"
 
-olio-sitka@^1.0.14:
-  version "1.0.14"
-  resolved "https://registry.yarnpkg.com/olio-sitka/-/olio-sitka-1.0.14.tgz#44f8c5b0242415c83ac9f572e5d10f33930eeacd"
+olio-sitka@^1.0.17:
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/olio-sitka/-/olio-sitka-1.0.17.tgz#101ef2e2961e9b099d67d0eb79dc015aa0a753dc"
 
 on-finished@~2.3.0:
   version "2.3.0"
