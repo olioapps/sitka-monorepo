@@ -1,6 +1,7 @@
 {
     "name": "@cashew/common",
     "version": "1.0.0",
+    "author": "aron@olioapps.com",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "license": "MIT",
