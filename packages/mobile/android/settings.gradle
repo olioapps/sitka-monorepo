@@ -1,0 +1,3 @@
+rootProject.name = 'typescriptexpoapolloboilerplate'
+
+include ':app'
