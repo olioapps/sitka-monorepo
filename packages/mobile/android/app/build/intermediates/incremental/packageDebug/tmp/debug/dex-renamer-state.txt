@@ -1,4 +1,4 @@
-#Sun Feb 03 01:23:21 PST 2019
+#Sun Feb 03 02:16:40 PST 2019
 base.0=/Users/aron/dev/projects/olio/sitka/packages/mobile/android/app/build/intermediates/transforms/dexMerger/debug/0
 path.0=classes.dex
 renamed.0=classes.dex
