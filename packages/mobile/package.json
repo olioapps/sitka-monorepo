@@ -19,6 +19,7 @@
   "author": "Daishi Kato",
   "license": "MIT",
   "dependencies": {
+    "@cashew/common": "1.0.0",
     "graphql-tag": "^2.10.0",
     "graphql-tools": "^4.0.3",
     "react": "16.5.0",
